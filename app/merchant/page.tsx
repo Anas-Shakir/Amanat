@@ -119,7 +119,27 @@ export default function MerchantPage() {
         setErrorMessage(data.error || "Failed to settle redemption. Please try again.");
       }
     } catch (err) {
-      setErrorMessage("Network error during settlement.");
+      // Offline fallback: Queue redemption locally
+      const { queueOfflineRedemption } = await import("@/lib/offline/sync-queue");
+      const queued = queueOfflineRedemption({
+        voucherCode: verifiedData.code,
+        merchantCode: "MER-DADU-01",
+        amount: amountNum,
+        itemsDelivered: ["Emergency Food Package (Offline Handover)"],
+        timestamp: new Date().toISOString(),
+      });
+
+      setRedemptionReceipt({
+        id: queued.id,
+        householdId: verifiedData.householdId,
+        fulfilledAmount: amountNum,
+        remainingBalance: Math.max(0, verifiedData.remainingAmount - amountNum),
+        merchantStore: "Madina Kiryana Store (Johi)",
+        blockchainTxHash: "PENDING_OFFLINE_SYNC",
+        timestamp: new Date().toLocaleTimeString(),
+        isOfflineQueued: true,
+      });
+      setStep("CONFIRMED");
     } finally {
       setIsLoading(false);
     }
@@ -360,7 +380,11 @@ export default function MerchantPage() {
           </div>
 
           <div className="space-y-1">
-            <Badge variant="verified">HANDOVER CONFIRMED</Badge>
+            {redemptionReceipt.isOfflineQueued ? (
+              <Badge variant="pending">OFFLINE HANDOVER (QUEUED)</Badge>
+            ) : (
+              <Badge variant="verified">HANDOVER CONFIRMED</Badge>
+            )}
             <h2 className="text-2xl font-black text-white pt-1">
               {formatCurrencyPKR(redemptionReceipt.fulfilledAmount)} Fulfilled
             </h2>
@@ -388,7 +412,7 @@ export default function MerchantPage() {
             <div className="flex justify-between items-center pt-2 border-t border-slate-800/80">
               <span className="text-slate-400">Base Sepolia Tx Proof:</span>
               <span className="text-[11px] font-mono text-cyan-400 truncate max-w-[140px]">
-                {redemptionReceipt.blockchainTxHash}
+                {redemptionReceipt.isOfflineQueued ? "Queued for Auto-Sync" : redemptionReceipt.blockchainTxHash}
               </span>
             </div>
           </div>

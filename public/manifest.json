@@ -1,24 +1,54 @@
 {
   "name": "Amanat — Verifiable Local Aid",
   "short_name": "Amanat",
-  "description": "Local aid infrastructure connecting humanitarian funding to verified household entitlements and local merchants.",
+  "description": "Verifiable local aid infrastructure connecting donor pools to household entitlements and Kiryana merchants in Dadu, Sindh.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#090d16",
-  "theme_color": "#0ea5e9",
+  "background_color": "#070b12",
+  "theme_color": "#10b981",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/icons/icon-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
+      "src": "/icons/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
       "purpose": "any maskable"
     },
     {
-      "src": "/icons/icon-512x512.png",
+      "src": "/icons/icon.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon.svg",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Merchant POS Terminal",
+      "short_name": "Merchant POS",
+      "description": "Instant offline-friendly voucher keypad for Kiryana store owners",
+      "url": "/merchant",
+      "icons": [{ "src": "/icons/icon.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "Dadu Aid Map",
+      "short_name": "Aid Map",
+      "description": "Geospatial telemetry and store locations across Dadu",
+      "url": "/map",
+      "icons": [{ "src": "/icons/icon.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "SMS Voucher Simulator",
+      "short_name": "SMS Voucher",
+      "description": "Beneficiary voucher and dual-language SMS dispatch",
+      "url": "/voucher",
+      "icons": [{ "src": "/icons/icon.svg", "sizes": "192x192" }]
     }
   ]
 }
