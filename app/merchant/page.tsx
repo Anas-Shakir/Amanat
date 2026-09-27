@@ -7,30 +7,38 @@ import {
   ShieldCheck, 
   AlertCircle, 
   ArrowLeft, 
-  QrCode, 
   RotateCcw,
   Sparkles,
-  MapPin
+  MapPin,
+  Clock,
+  Printer,
+  Copy
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatCurrencyPKR } from "@/lib/utils";
+
+interface VerifiedVoucherData {
+  code: string;
+  householdId: string;
+  headOfHousehold?: string;
+  campaignTitle: string;
+  totalEntitlement: number;
+  alreadyRedeemed: number;
+  remainingAmount: number;
+  status: string;
+  category: string;
+}
 
 export default function MerchantPage() {
   const [voucherCode, setVoucherCode] = useState("");
   const [step, setStep] = useState<"ENTER" | "VERIFIED" | "CONFIRMED">("ENTER");
   const [fulfillAmount, setFulfillAmount] = useState("1200");
   const [errorMessage, setErrorMessage] = useState("");
-
-  const sampleVoucher = {
-    code: "4827",
-    householdId: "AMN-48291",
-    totalEntitlement: 4000,
-    alreadyRedeemed: 1350,
-    remainingAmount: 2650,
-    category: "Emergency Food Assistance",
-    storeName: "Madina Kiryana Store, Johi Branch",
-  };
+  const [isLoading, setIsLoading] = useState(false);
+  const [verifiedData, setVerifiedData] = useState<VerifiedVoucherData | null>(null);
+  const [redemptionReceipt, setRedemptionReceipt] = useState<any | null>(null);
+  const [copiedReceipt, setCopiedReceipt] = useState(false);
 
   const handleKeypadPress = (digit: string) => {
     if (voucherCode.length < 6) {
@@ -44,24 +52,93 @@ export default function MerchantPage() {
     setErrorMessage("");
   };
 
-  const handleVerify = (codeToTest?: string) => {
-    const code = codeToTest || voucherCode;
-    if (code.trim() === "4827" || code.trim().length >= 4) {
-      setErrorMessage("");
-      setStep("VERIFIED");
-    } else {
-      setErrorMessage("Voucher code not recognized. Try demo code '4827'.");
+  const handleVerify = async (codeToTest?: string) => {
+    const code = (codeToTest || voucherCode).trim();
+    if (!code || code.length < 3) return;
+
+    setIsLoading(true);
+    setErrorMessage("");
+
+    try {
+      const res = await fetch("/api/vouchers/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ voucherCode: code }),
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success && data.voucher) {
+        setVerifiedData(data.voucher);
+        // Default fulfillment amount to Rs. 1,200 or remaining
+        const defaultAmt = Math.min(1200, data.voucher.remainingAmount);
+        setFulfillAmount(String(defaultAmt));
+        setStep("VERIFIED");
+      } else {
+        setErrorMessage(data.error || "Voucher code not found. Try demo code '4827'.");
+      }
+    } catch (err: any) {
+      setErrorMessage("Network error during verification. Try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleFulfill = () => {
-    setStep("CONFIRMED");
+  const handleConfirmFulfillment = async () => {
+    if (!verifiedData) return;
+    const amountNum = Number(fulfillAmount);
+
+    if (isNaN(amountNum) || amountNum <= 0) {
+      setErrorMessage("Enter a valid amount.");
+      return;
+    }
+
+    if (amountNum > verifiedData.remainingAmount) {
+      setErrorMessage(`Amount exceeds remaining balance of ${formatCurrencyPKR(verifiedData.remainingAmount)}`);
+      return;
+    }
+
+    setIsLoading(true);
+    setErrorMessage("");
+
+    try {
+      const res = await fetch("/api/settlement", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          voucherCode: verifiedData.code,
+          merchantId: "merch-dadu-01",
+          amount: amountNum,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success && data.redemption) {
+        setRedemptionReceipt(data.redemption);
+        setStep("CONFIRMED");
+      } else {
+        setErrorMessage(data.error || "Failed to settle redemption. Please try again.");
+      }
+    } catch (err) {
+      setErrorMessage("Network error during settlement.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleReset = () => {
     setStep("ENTER");
     setVoucherCode("");
     setErrorMessage("");
+    setVerifiedData(null);
+    setRedemptionReceipt(null);
+  };
+
+  const copyReceiptDetails = () => {
+    if (!redemptionReceipt) return;
+    const txt = `AMANAT FULFILLMENT RECEIPT\nReceipt ID: ${redemptionReceipt.id}\nHousehold: ${redemptionReceipt.householdId}\nFulfilled: Rs. ${redemptionReceipt.fulfilledAmount}\nRemaining: Rs. ${redemptionReceipt.remainingBalance}\nTx Proof: ${redemptionReceipt.blockchainTxHash}\nTime: ${redemptionReceipt.timestamp}`;
+    navigator.clipboard.writeText(txt);
+    setCopiedReceipt(true);
+    setTimeout(() => setCopiedReceipt(false), 2000);
   };
 
   return (
@@ -87,11 +164,11 @@ export default function MerchantPage() {
         </div>
       </div>
 
-      {/* STEP 1: Tactile Voucher Entry */}
+      {/* STEP 1: Tactile Voucher Entry Keypad */}
       {step === "ENTER" && (
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-6 shadow-2xl">
           <div className="text-center space-y-1">
-            <h2 className="text-2xl font-black text-white">Enter Voucher Code</h2>
+            <h2 className="text-2xl font-black text-white">Enter Voucher PIN</h2>
             <p className="text-xs text-slate-400">
               Ask beneficiary for their 4-digit SMS / WhatsApp code.
             </p>
@@ -104,13 +181,13 @@ export default function MerchantPage() {
             </div>
             {errorMessage && (
               <div className="text-xs text-rose-400 font-medium mt-2 flex items-center justify-center gap-1">
-                <AlertCircle className="w-3.5 h-3.5" />
+                <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
                 <span>{errorMessage}</span>
               </div>
             )}
           </div>
 
-          {/* Touch-Friendly Numeric Keypad for Mobile Shopkeepers */}
+          {/* Touch-Friendly Numeric Keypad */}
           <div className="grid grid-cols-3 gap-2.5">
             {["1", "2", "3", "4", "5", "6", "7", "8", "9"].map((digit) => (
               <button
@@ -153,21 +230,21 @@ export default function MerchantPage() {
             variant="merchant"
             size="xl"
             className="w-full"
-            disabled={voucherCode.length < 3}
+            disabled={voucherCode.length < 3 || isLoading}
             onClick={() => handleVerify()}
           >
-            <span>Verify Voucher</span>
+            <span>{isLoading ? "Verifying with Node..." : "Verify Voucher"}</span>
           </Button>
         </div>
       )}
 
-      {/* STEP 2: Entitlement Verified & Handover Amount Selection */}
-      {step === "VERIFIED" && (
+      {/* STEP 2: Entitlement Verified & Amount Selection */}
+      {step === "VERIFIED" && verifiedData && (
         <div className="bg-slate-900 border-2 border-emerald-500/50 rounded-3xl p-6 space-y-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
           <div className="flex items-center justify-between">
             <Badge variant="verified" className="text-xs py-1 px-3">
               <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              <span>VALID CODE #{voucherCode || "4827"}</span>
+              <span>VALID CODE #{verifiedData.code}</span>
             </Badge>
             <button
               onClick={handleReset}
@@ -178,30 +255,36 @@ export default function MerchantPage() {
             </button>
           </div>
 
-          {/* Household summary card */}
-          <div className="bg-slate-950 rounded-2xl border border-slate-800 p-4 space-y-3">
-            <div className="flex justify-between text-xs text-slate-400">
+          {/* Household summary */}
+          <div className="bg-slate-950 rounded-2xl border border-slate-800 p-4 space-y-3 text-xs">
+            <div className="flex justify-between text-slate-400">
               <span>Household Reference:</span>
               <span className="font-mono font-bold text-white text-sm">
-                {sampleVoucher.householdId}
+                {verifiedData.householdId}
               </span>
             </div>
-            <div className="flex justify-between text-xs text-slate-400">
+            <div className="flex justify-between text-slate-400">
+              <span>Campaign Pool:</span>
+              <span className="text-slate-200 truncate max-w-[180px]">
+                {verifiedData.campaignTitle}
+              </span>
+            </div>
+            <div className="flex justify-between text-slate-400">
               <span>Original Entitlement:</span>
               <span className="text-slate-300 font-medium">
-                {formatCurrencyPKR(sampleVoucher.totalEntitlement)}
+                {formatCurrencyPKR(verifiedData.totalEntitlement)}
               </span>
             </div>
-            <div className="flex justify-between text-xs text-slate-400">
+            <div className="flex justify-between text-slate-400">
               <span>Already Handed Over:</span>
               <span className="text-slate-300">
-                {formatCurrencyPKR(sampleVoucher.alreadyRedeemed)}
+                {formatCurrencyPKR(verifiedData.alreadyRedeemed)}
               </span>
             </div>
             <div className="pt-2 border-t border-slate-800 flex justify-between items-center">
-              <span className="text-xs font-bold text-slate-200">Remaining Balance:</span>
+              <span className="text-xs font-bold text-slate-200">Available Balance:</span>
               <span className="text-2xl font-black text-emerald-400">
-                {formatCurrencyPKR(sampleVoucher.remainingAmount)}
+                {formatCurrencyPKR(verifiedData.remainingAmount)}
               </span>
             </div>
           </div>
@@ -209,7 +292,7 @@ export default function MerchantPage() {
           {/* Handover Amount Selection */}
           <div className="space-y-3">
             <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">
-              Goods Amount to Provide Today:
+              Goods Amount to Hand Over:
             </label>
 
             <div className="relative">
@@ -218,7 +301,7 @@ export default function MerchantPage() {
               </span>
               <input
                 type="number"
-                max={sampleVoucher.remainingAmount}
+                max={verifiedData.remainingAmount}
                 value={fulfillAmount}
                 onChange={(e) => setFulfillAmount(e.target.value)}
                 className="w-full text-left pl-14 pr-4 py-4 rounded-2xl bg-slate-950 border-2 border-emerald-500/50 text-white font-black text-2xl focus:outline-none focus:border-emerald-400 shadow-inner"
@@ -227,21 +310,33 @@ export default function MerchantPage() {
 
             {/* Quick Partial Amount Buttons */}
             <div className="grid grid-cols-4 gap-2 pt-1">
-              {["500", "1000", "1200", "2650"].map((preset) => (
+              {[
+                { label: "Rs. 500", val: "500" },
+                { label: "Rs. 1,000", val: "1000" },
+                { label: "Rs. 1,200", val: "1200" },
+                { label: "Full Max", val: String(verifiedData.remainingAmount) },
+              ].map((btn, i) => (
                 <button
-                  key={preset}
+                  key={i}
                   type="button"
-                  onClick={() => setFulfillAmount(preset)}
+                  onClick={() => setFulfillAmount(btn.val)}
                   className={`py-2 text-xs font-bold rounded-xl border transition-all ${
-                    fulfillAmount === preset
+                    fulfillAmount === btn.val
                       ? "bg-emerald-600 text-white border-emerald-500"
                       : "bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700"
                   }`}
                 >
-                  {preset === "2650" ? "Max All" : `Rs. ${preset}`}
+                  {btn.label}
                 </button>
               ))}
             </div>
+
+            {errorMessage && (
+              <div className="text-xs text-rose-400 font-medium flex items-center gap-1">
+                <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+                <span>{errorMessage}</span>
+              </div>
+            )}
           </div>
 
           {/* Confirm Button */}
@@ -249,15 +344,16 @@ export default function MerchantPage() {
             variant="merchant"
             size="xl"
             className="w-full"
-            onClick={handleFulfill}
+            disabled={isLoading || Number(fulfillAmount) <= 0 || Number(fulfillAmount) > verifiedData.remainingAmount}
+            onClick={handleConfirmFulfillment}
           >
-            <span>Confirm Goods Handover</span>
+            <span>{isLoading ? "Processing Settlement..." : "Confirm Goods Handover"}</span>
           </Button>
         </div>
       )}
 
       {/* STEP 3: Handover Receipt & Settlement Telemetry */}
-      {step === "CONFIRMED" && (
+      {step === "CONFIRMED" && redemptionReceipt && (
         <div className="bg-slate-900 border-2 border-emerald-500/60 rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl text-center animate-in fade-in zoom-in-95 duration-200">
           <div className="w-16 h-16 rounded-full bg-emerald-950 border-2 border-emerald-400 flex items-center justify-center text-emerald-400 mx-auto shadow-lg shadow-emerald-900/50">
             <CheckCircle2 className="w-9 h-9" />
@@ -266,40 +362,57 @@ export default function MerchantPage() {
           <div className="space-y-1">
             <Badge variant="verified">HANDOVER CONFIRMED</Badge>
             <h2 className="text-2xl font-black text-white pt-1">
-              {formatCurrencyPKR(Number(fulfillAmount) || 1200)} Fulfilled
+              {formatCurrencyPKR(redemptionReceipt.fulfilledAmount)} Fulfilled
             </h2>
             <p className="text-xs text-slate-400">
-              Household reference: <strong className="text-white">{sampleVoucher.householdId}</strong>
+              Household reference: <strong className="text-white">{redemptionReceipt.householdId}</strong>
             </p>
           </div>
 
           {/* Receipt Details */}
           <div className="bg-slate-950 rounded-2xl border border-slate-800 p-4 text-left space-y-2.5 text-xs">
             <div className="flex justify-between">
-              <span className="text-slate-400">Remaining Balance:</span>
+              <span className="text-slate-400">Receipt Number:</span>
+              <span className="font-mono text-slate-200 font-bold">{redemptionReceipt.id}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-slate-400">Remaining Household Balance:</span>
               <span className="text-emerald-400 font-bold">
-                {formatCurrencyPKR(sampleVoucher.remainingAmount - (Number(fulfillAmount) || 1200))}
+                {formatCurrencyPKR(redemptionReceipt.remainingBalance)}
               </span>
             </div>
             <div className="flex justify-between">
               <span className="text-slate-400">Merchant Payout:</span>
-              <span className="text-cyan-400 font-bold">Guaranteed by Relayer</span>
+              <span className="text-cyan-400 font-bold">Relayer Subsidized (Gasless)</span>
             </div>
             <div className="flex justify-between items-center pt-2 border-t border-slate-800/80">
-              <span className="text-slate-400">Base Sepolia Tx:</span>
-              <span className="text-[11px] font-mono text-cyan-400">0x8fa3...a9f0</span>
+              <span className="text-slate-400">Base Sepolia Tx Proof:</span>
+              <span className="text-[11px] font-mono text-cyan-400 truncate max-w-[140px]">
+                {redemptionReceipt.blockchainTxHash}
+              </span>
             </div>
           </div>
 
-          <Button
-            variant="secondary"
-            size="lg"
-            className="w-full"
-            onClick={handleReset}
-          >
-            <RotateCcw className="w-4 h-4" />
-            <span>Process Next Voucher</span>
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="lg"
+              className="flex-1 text-xs"
+              onClick={copyReceiptDetails}
+            >
+              <Copy className="w-3.5 h-3.5" />
+              <span>{copiedReceipt ? "Receipt Copied!" : "Copy Receipt"}</span>
+            </Button>
+            <Button
+              variant="secondary"
+              size="lg"
+              className="flex-1 text-xs"
+              onClick={handleReset}
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>Next Voucher</span>
+            </Button>
+          </div>
         </div>
       )}
     </div>
