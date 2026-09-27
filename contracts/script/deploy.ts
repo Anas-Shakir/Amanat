@@ -1,23 +1,48 @@
-import { ethers } from "hardhat";
+import { ethers } from "ethers";
+import * as fs from "fs";
+import * as path from "path";
 import * as dotenv from "dotenv";
 
 dotenv.config({ path: ".env.local" });
 
 async function main() {
-  const [deployer] = await ethers.getSigners();
+  const rpcUrl = process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL || "https://sepolia.base.org";
+  const rawKey = process.env.RELAYER_PRIVATE_KEY;
+
+  if (!rawKey) {
+    console.error("❌ RELAYER_PRIVATE_KEY missing in .env.local");
+    process.exit(1);
+  }
+
+  const formattedKey = rawKey.startsWith("0x") ? rawKey : `0x${rawKey}`;
+  const provider = new ethers.JsonRpcProvider(rpcUrl);
+  const wallet = new ethers.Wallet(formattedKey, provider);
+
   console.log("==================================================");
   console.log("Deploying AmanatAidPool to Base Sepolia (Chain 84532)");
-  console.log("Deployer Address:", deployer.address);
+  console.log("Deployer Address:", wallet.address);
   console.log("==================================================");
 
-  const relayerAddress = process.env.RELAYER_PUBLIC_ADDRESS || deployer.address;
-  console.log("Configured Relayer Address:", relayerAddress);
+  const balance = await provider.getBalance(wallet.address);
+  console.log("Deployer Balance:", ethers.formatEther(balance), "ETH");
 
-  const AmanatAidPool = await ethers.getContractFactory("AmanatAidPool");
-  const pool = await AmanatAidPool.deploy(deployer.address, relayerAddress);
-  await pool.waitForDeployment();
+  if (balance === BigInt(0)) {
+    console.log("\n⚠️  Deployer wallet has 0 ETH on Base Sepolia.");
+    console.log("👉 Get free faucet ETH at https://faucets.chain.link/base-sepolia or https://base.org/faucets");
+    console.log("👉 Deployer address: " + wallet.address + "\n");
+    return;
+  }
 
-  const contractAddress = await pool.getAddress();
+  const artifactPath = path.resolve("contracts/artifacts/contracts/src/AmanatAidPool.sol/AmanatAidPool.json");
+  const artifact = JSON.parse(fs.readFileSync(artifactPath, "utf-8"));
+  const factory = new ethers.ContractFactory(artifact.abi, artifact.bytecode, wallet);
+
+  console.log("Broadcasting deployment transaction to Base Sepolia...");
+  const contract = await factory.deploy(wallet.address, wallet.address);
+  console.log("Transaction Hash:", contract.deploymentTransaction()?.hash);
+  await contract.waitForDeployment();
+
+  const contractAddress = await contract.getAddress();
   console.log("✅ AmanatAidPool successfully deployed!");
   console.log("Contract Address:", contractAddress);
   console.log(`Explorer: https://sepolia.basescan.org/address/${contractAddress}`);

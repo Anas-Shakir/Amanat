@@ -10,7 +10,9 @@
     "start": "next start",
     "lint": "eslint",
     "test:security": "npx tsx scripts/test-security-suite.ts",
-    "test:e2e": "npx tsx scripts/test-e2e-flow.ts"
+    "test:e2e": "npx tsx scripts/test-e2e-flow.ts",
+    "seed": "npx tsx scripts/seed-production.ts",
+    "deploy:contract": "npx tsx scripts/deploy-contract.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.2",
