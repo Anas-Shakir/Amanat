@@ -1,0 +1,132 @@
+export const AMANAT_AID_POOL_ABI = [
+  {
+    inputs: [
+      { internalType: "address", name: "adminAddress", type: "address" },
+      { internalType: "address", name: "initialRelayer", type: "address" },
+    ],
+    stateMutability: "nonpayable",
+    type: "constructor",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "uint256", name: "campaignId", type: "uint256" },
+      { indexed: false, internalType: "uint256", name: "targetAmount", type: "uint256" },
+      { indexed: true, internalType: "address", name: "issuer", type: "address" },
+      { indexed: false, internalType: "string", name: "metadataURI", type: "string" },
+    ],
+    name: "CampaignCreated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "uint256", name: "campaignId", type: "uint256" },
+      { indexed: true, internalType: "address", name: "donor", type: "address" },
+      { indexed: false, internalType: "uint256", name: "amount", type: "uint256" },
+      { indexed: false, internalType: "uint256", name: "newTotalFunded", type: "uint256" },
+    ],
+    name: "CampaignFunded",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "uint256", name: "campaignId", type: "uint256" },
+      { indexed: true, internalType: "bytes32", name: "entitlementHash", type: "bytes32" },
+      { indexed: false, internalType: "uint256", name: "allocatedAmount", type: "uint256" },
+    ],
+    name: "EntitlementCreated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "uint256", name: "campaignId", type: "uint256" },
+      { indexed: true, internalType: "bytes32", name: "entitlementHash", type: "bytes32" },
+      { indexed: true, internalType: "address", name: "merchant", type: "address" },
+      { indexed: false, internalType: "uint256", name: "amountRedeemed", type: "uint256" },
+      { indexed: false, internalType: "uint256", name: "remainingAmount", type: "uint256" },
+    ],
+    name: "EntitlementRedeemed",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "uint256", name: "campaignId", type: "uint256" },
+      { indexed: true, internalType: "address", name: "merchant", type: "address" },
+      { indexed: false, internalType: "uint256", name: "amount", type: "uint256" },
+    ],
+    name: "SettlementReleased",
+    type: "event",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "campaignId", type: "uint256" },
+      { internalType: "uint256", name: "targetAmount", type: "uint256" },
+      { internalType: "string", name: "metadataURI", type: "string" },
+    ],
+    name: "createCampaign",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "campaignId", type: "uint256" },
+      { internalType: "bytes32", name: "entitlementHash", type: "bytes32" },
+      { internalType: "uint256", name: "allocatedAmount", type: "uint256" },
+    ],
+    name: "createEntitlement",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "uint256", name: "campaignId", type: "uint256" }],
+    name: "fundCampaign",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "campaignId", type: "uint256" },
+      { internalType: "bytes32", name: "entitlementHash", type: "bytes32" },
+      { internalType: "uint256", name: "amount", type: "uint256" },
+      { internalType: "address payable", name: "merchantAddress", type: "address" },
+    ],
+    name: "redeemEntitlement",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "uint256", name: "campaignId", type: "uint256" }],
+    name: "getCampaign",
+    outputs: [
+      { internalType: "uint256", name: "id", type: "uint256" },
+      { internalType: "uint256", name: "targetAmount", type: "uint256" },
+      { internalType: "uint256", name: "totalFunded", type: "uint256" },
+      { internalType: "uint256", name: "totalRedeemed", type: "uint256" },
+      { internalType: "bool", name: "isActive", type: "bool" },
+      { internalType: "address", name: "issuer", type: "address" },
+      { internalType: "string", name: "metadataURI", type: "string" },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "bytes32", name: "entitlementHash", type: "bytes32" }],
+    name: "getEntitlement",
+    outputs: [
+      { internalType: "uint256", name: "campaignId", type: "uint256" },
+      { internalType: "uint256", name: "allocatedAmount", type: "uint256" },
+      { internalType: "uint256", name: "remainingAmount", type: "uint256" },
+      { internalType: "bool", name: "exists", type: "bool" },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+] as const;
