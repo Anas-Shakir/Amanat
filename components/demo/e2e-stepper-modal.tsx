@@ -9,15 +9,8 @@ import {
   CheckCircle2, 
   Loader2, 
   Sparkles, 
-  ShieldCheck, 
-  Store, 
-  Smartphone, 
-  HeartHandshake, 
-  Users,
-  RotateCcw,
-  ExternalLink
+  RotateCcw
 } from "lucide-react";
-import { formatCurrencyPKR } from "@/lib/utils";
 
 interface StepStatus {
   step: number;
@@ -214,14 +207,14 @@ export function E2EStepperModal({
       onClose={onClose}
       title="Amanat Complete End-to-End Lifecycle Simulation"
       description="Live automated demonstration across all 4 system roles without manual DB edits"
-      className="max-w-2xl"
+      className="max-w-2xl bg-white"
     >
-      <div className="space-y-4 text-xs">
+      <div className="space-y-4 text-xs text-[#2b1712]">
         {/* Top Action Bar */}
-        <div className="flex items-center justify-between p-3 rounded-xl bg-slate-950 border border-slate-800">
+        <div className="flex items-center justify-between p-3.5 rounded-xl bg-[#fbf9f6] border border-[#eadecd]">
           <div className="flex items-center gap-2">
             <Badge variant="verified">Automated E2E Suite</Badge>
-            <span className="text-slate-400 text-[11px]">10 Distinct State Transitions</span>
+            <span className="text-[#6e5c54] text-[11px] font-semibold">10 Distinct State Transitions</span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -230,7 +223,7 @@ export function E2EStepperModal({
                 size="sm"
                 variant="primary"
                 onClick={handleStartSimulation}
-                className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white"
+                className="text-xs"
               >
                 <Play className="w-3.5 h-3.5 mr-1" />
                 <span>{completed ? "Re-Run Full Flow" : "Execute Live Flow"}</span>
@@ -252,10 +245,10 @@ export function E2EStepperModal({
               key={s.step}
               className={`p-3 rounded-xl border transition-all ${
                 s.status === "RUNNING"
-                  ? "bg-slate-900 border-emerald-500 shadow-lg shadow-emerald-950/40"
+                  ? "bg-[#fdf8f2] border-[#f58549] shadow-sm"
                   : s.status === "DONE"
-                  ? "bg-slate-950/80 border-slate-800"
-                  : "bg-slate-950/40 border-slate-900 opacity-60"
+                  ? "bg-[#fbf9f6] border-[#eadecd]"
+                  : "bg-white border-[#f4ede4] opacity-60"
               }`}
             >
               <div className="flex items-start justify-between gap-3">
@@ -263,23 +256,23 @@ export function E2EStepperModal({
                   <div
                     className={`w-6 h-6 rounded-full flex items-center justify-center font-mono text-[11px] font-bold ${
                       s.status === "DONE"
-                        ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40"
+                        ? "bg-[#585123] text-white"
                         : s.status === "RUNNING"
-                        ? "bg-emerald-600 text-white animate-pulse"
-                        : "bg-slate-900 text-slate-500 border border-slate-800"
+                        ? "bg-[#f58549] text-white animate-pulse"
+                        : "bg-[#f4ede4] text-[#6e5c54]"
                     }`}
                   >
                     {s.status === "DONE" ? <CheckCircle2 className="w-4 h-4" /> : s.step}
                   </div>
                   <div>
-                    <div className="font-bold text-white text-xs flex items-center gap-2">
+                    <div className="font-bold text-[#2b1712] text-xs flex items-center gap-2">
                       <span>{s.label}</span>
-                      <span className="text-[10px] font-mono text-slate-400 uppercase">
+                      <span className="text-[10px] font-mono text-[#6e5c54] uppercase">
                         [{s.actor}]
                       </span>
                     </div>
                     {s.detail && (
-                      <p className="text-[11px] text-emerald-300/90 mt-0.5 font-mono">
+                      <p className="text-[11px] text-[#585123] mt-0.5 font-mono font-semibold">
                         {s.detail}
                       </p>
                     )}
@@ -288,10 +281,10 @@ export function E2EStepperModal({
 
                 <div className="shrink-0">
                   {s.status === "RUNNING" && (
-                    <Loader2 className="w-4 h-4 animate-spin text-emerald-400" />
+                    <Loader2 className="w-4 h-4 animate-spin text-[#f58549]" />
                   )}
                   {s.status === "DONE" && (
-                    <Badge variant="emerald" className="text-[10px]">
+                    <Badge variant="verified" className="text-[10px]">
                       Passed
                     </Badge>
                   )}
@@ -302,12 +295,12 @@ export function E2EStepperModal({
         </div>
 
         {completed && (
-          <div className="p-3 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-center space-y-1">
-            <div className="font-bold text-emerald-300 flex items-center justify-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-emerald-400" />
+          <div className="p-3.5 rounded-xl bg-[#585123]/10 border border-[#585123]/40 text-center space-y-1">
+            <div className="font-bold text-[#585123] flex items-center justify-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-[#585123]" />
               <span>Full End-to-End Lifecycle Successfully Verified!</span>
             </div>
-            <p className="text-slate-400 text-[11px]">
+            <p className="text-[#6e5c54] text-[11px]">
               The complete circuit from Donor deposit to Kiryana store handover and Base Sepolia gasless settlement executed without any manual intervention.
             </p>
           </div>

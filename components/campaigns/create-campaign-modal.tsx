@@ -4,15 +4,10 @@ import { useState } from "react";
 import { Modal } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { 
-  PlusCircle, 
   Flame, 
   ShieldCheck, 
-  MapPin, 
-  Sparkles,
-  Layers,
-  HeartHandshake
+  Sparkles
 } from "lucide-react";
 import { AidMode, AidCategory } from "@/types";
 
@@ -81,7 +76,7 @@ export function CreateCampaignModal({
       <form onSubmit={handleSubmit} className="space-y-4 text-xs">
         {/* Mode Selector */}
         <div className="space-y-1.5">
-          <label className="text-slate-300 font-semibold uppercase tracking-wider">
+          <label className="text-[#2b1712] font-bold uppercase tracking-wider">
             Operational Mode
           </label>
           <div className="grid grid-cols-2 gap-3">
@@ -90,14 +85,14 @@ export function CreateCampaignModal({
               onClick={() => setMode("EMERGENCY")}
               className={`p-3 rounded-xl border text-left flex items-start gap-2.5 transition-all ${
                 mode === "EMERGENCY"
-                  ? "bg-rose-950/80 border-rose-600/70 text-white shadow-md shadow-rose-950/50"
-                  : "bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700"
+                  ? "bg-[#fbf4f2] border-[#772f1a] text-[#772f1a] shadow-sm font-bold"
+                  : "bg-white border-[#eadecd] text-[#6e5c54] hover:border-[#f2a65a]"
               }`}
             >
-              <Flame className="w-4 h-4 text-rose-400 mt-0.5 flex-shrink-0" />
+              <Flame className="w-4 h-4 text-[#772f1a] mt-0.5 flex-shrink-0" />
               <div>
-                <div className="font-bold text-xs text-white">Emergency Mode</div>
-                <div className="text-[10px] text-slate-400">Flood / Sudden Crisis</div>
+                <div className="font-bold text-xs text-[#772f1a]">Emergency Mode</div>
+                <div className="text-[10px] text-[#6e5c54]">Flood / Sudden Crisis</div>
               </div>
             </button>
 
@@ -106,14 +101,14 @@ export function CreateCampaignModal({
               onClick={() => setMode("COMMUNITY")}
               className={`p-3 rounded-xl border text-left flex items-start gap-2.5 transition-all ${
                 mode === "COMMUNITY"
-                  ? "bg-emerald-950/80 border-emerald-600/70 text-white shadow-md shadow-emerald-950/50"
-                  : "bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700"
+                  ? "bg-[#f5f4ed] border-[#585123] text-[#585123] shadow-sm font-bold"
+                  : "bg-white border-[#eadecd] text-[#6e5c54] hover:border-[#f2a65a]"
               }`}
             >
-              <ShieldCheck className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+              <ShieldCheck className="w-4 h-4 text-[#585123] mt-0.5 flex-shrink-0" />
               <div>
-                <div className="font-bold text-xs text-white">Community Mode</div>
-                <div className="text-[10px] text-slate-400">Zakat / Monthly Welfare</div>
+                <div className="font-bold text-xs text-[#585123]">Community Mode</div>
+                <div className="text-[10px] text-[#6e5c54]">Zakat / Monthly Welfare</div>
               </div>
             </button>
           </div>
@@ -121,7 +116,7 @@ export function CreateCampaignModal({
 
         {/* Title */}
         <div className="space-y-1.5">
-          <label className="text-slate-300 font-semibold uppercase tracking-wider">
+          <label className="text-[#2b1712] font-bold uppercase tracking-wider">
             Pool Title
           </label>
           <Input
@@ -135,7 +130,7 @@ export function CreateCampaignModal({
 
         {/* Description */}
         <div className="space-y-1.5">
-          <label className="text-slate-300 font-semibold uppercase tracking-wider">
+          <label className="text-[#2b1712] font-bold uppercase tracking-wider">
             Objective & Scope
           </label>
           <Input
@@ -150,13 +145,13 @@ export function CreateCampaignModal({
         {/* Category & Location */}
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-1.5">
-            <label className="text-slate-300 font-semibold uppercase tracking-wider">
+            <label className="text-[#2b1712] font-bold uppercase tracking-wider">
               Aid Category
             </label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value as AidCategory)}
-              className="w-full h-11 rounded-xl border border-slate-700 bg-slate-950 px-3 text-xs text-slate-100 focus:outline-none focus:border-emerald-500"
+              className="w-full h-11 rounded-xl border border-[#eadecd] bg-white px-3 text-xs text-[#2b1712] focus:outline-none focus:border-[#f58549]"
             >
               <option value="EMERGENCY_FOOD">Emergency Food & Water</option>
               <option value="CLEAN_WATER">Clean Drinking Water</option>
@@ -167,7 +162,7 @@ export function CreateCampaignModal({
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-slate-300 font-semibold uppercase tracking-wider">
+            <label className="text-[#2b1712] font-bold uppercase tracking-wider">
               Target Households
             </label>
             <Input
@@ -183,7 +178,7 @@ export function CreateCampaignModal({
         {/* Funding Goal & Location */}
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-1.5">
-            <label className="text-slate-300 font-semibold uppercase tracking-wider">
+            <label className="text-[#2b1712] font-bold uppercase tracking-wider">
               Target Funding (PKR)
             </label>
             <Input
@@ -197,7 +192,7 @@ export function CreateCampaignModal({
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-slate-300 font-semibold uppercase tracking-wider">
+            <label className="text-[#2b1712] font-bold uppercase tracking-wider">
               Location / Dadu Area
             </label>
             <Input
@@ -210,8 +205,8 @@ export function CreateCampaignModal({
           </div>
         </div>
 
-        <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-[11px] text-slate-400 flex items-start gap-2">
-          <Sparkles className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+        <div className="p-3.5 rounded-xl bg-[#fbf9f6] border border-[#eadecd] text-[11px] text-[#6e5c54] flex items-start gap-2">
+          <Sparkles className="w-4 h-4 text-[#f58549] mt-0.5 flex-shrink-0" />
           <p>
             Once published, this pool becomes immediately available for donor funding and authorized household entitlement allocation.
           </p>

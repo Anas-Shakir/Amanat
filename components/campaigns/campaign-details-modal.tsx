@@ -50,61 +50,61 @@ export function CampaignDetailsModal({
       onClose={onClose}
       title={campaign.title}
       description={campaign.location}
-      className="max-w-2xl"
+      className="max-w-2xl bg-white"
     >
-      <div className="space-y-6 text-xs text-slate-300">
+      <div className="space-y-6 text-xs text-[#2b1712]">
         {/* Badges & Mode */}
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <Badge variant={campaign.mode === "EMERGENCY" ? "emergency" : "community"}>
               {campaign.mode === "EMERGENCY" ? "Emergency Pool" : "Community Welfare"}
             </Badge>
-            <Badge variant="emerald">{campaign.category}</Badge>
+            <Badge variant="verified">{campaign.category}</Badge>
           </div>
-          <Badge variant="onChain">Base Sepolia #84532</Badge>
+          <Badge variant="verified">Base Sepolia #84532</Badge>
         </div>
 
         {/* Description */}
-        <p className="text-sm text-slate-300 leading-relaxed bg-slate-950 p-4 rounded-xl border border-slate-800">
+        <p className="text-sm text-[#2b1712] leading-relaxed bg-[#fbf9f6] p-4 rounded-xl border border-[#eadecd]">
           {campaign.description}
         </p>
 
         {/* Progress & Metrics */}
-        <div className="space-y-3 bg-slate-950/80 p-4 rounded-2xl border border-slate-800">
+        <div className="space-y-3 bg-[#fbf9f6] p-4 rounded-2xl border border-[#eadecd]">
           <ProgressBar
             value={fundingPercent}
             label="Pool Funding Status"
             sublabel={`${formatCurrencyPKR(campaign.fundedAmount)} / ${formatCurrencyPKR(campaign.targetAmount)} (${fundingPercent}%)`}
-            colorVariant="cyan"
+            colorVariant="terracotta"
           />
 
           <ProgressBar
             value={fulfillmentPercent}
             label="Kiryana Store Fulfillment to Beneficiaries"
             sublabel={`${fulfillmentPercent}% Handed Over`}
-            colorVariant="emerald"
+            colorVariant="olive"
           />
         </div>
 
         {/* Key Metrics Grid */}
         <div className="grid grid-cols-3 gap-3">
-          <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-            <div className="text-slate-400">Target Households</div>
-            <div className="text-base font-bold text-white mt-1">
+          <div className="p-3 rounded-xl bg-[#fbf9f6] border border-[#eadecd]">
+            <div className="text-[#6e5c54] font-semibold">Target Households</div>
+            <div className="text-base font-bold text-[#772f1a] mt-1">
               {campaign.targetHouseholds} Families
             </div>
           </div>
 
-          <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-            <div className="text-slate-400">Reached So Far</div>
-            <div className="text-base font-bold text-emerald-400 mt-1">
+          <div className="p-3 rounded-xl bg-[#fbf9f6] border border-[#eadecd]">
+            <div className="text-[#6e5c54] font-semibold">Reached So Far</div>
+            <div className="text-base font-bold text-[#585123] mt-1">
               {campaign.reachedHouseholds || 18} Families
             </div>
           </div>
 
-          <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-            <div className="text-slate-400">Average Entitlement</div>
-            <div className="text-base font-bold text-cyan-400 mt-1">
+          <div className="p-3 rounded-xl bg-[#fbf9f6] border border-[#eadecd]">
+            <div className="text-[#6e5c54] font-semibold">Average Entitlement</div>
+            <div className="text-base font-bold text-[#f58549] mt-1">
               Rs. 4,000 / family
             </div>
           </div>
@@ -112,25 +112,25 @@ export function CampaignDetailsModal({
 
         {/* Participating Merchants in Dadu */}
         <div className="space-y-2">
-          <h4 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-            <Store className="w-3.5 h-3.5 text-emerald-400" />
+          <h4 className="text-xs font-bold text-[#772f1a] uppercase tracking-wider flex items-center gap-1.5">
+            <Store className="w-3.5 h-3.5 text-[#f58549]" />
             <span>Participating Fulfillment Nodes (Kiryana Stores)</span>
           </h4>
           <div className="space-y-1.5">
             {sampleStores.map((st, i) => (
               <div
                 key={i}
-                className="p-3 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between"
+                className="p-3 rounded-xl bg-[#fbf9f6] border border-[#eadecd] flex items-center justify-between"
               >
                 <div>
-                  <div className="font-semibold text-white">{st.name}</div>
-                  <div className="text-[11px] text-slate-400 flex items-center gap-1">
-                    <MapPin className="w-3 h-3 text-emerald-400" />
+                  <div className="font-bold text-[#2b1712]">{st.name}</div>
+                  <div className="text-[11px] text-[#6e5c54] flex items-center gap-1">
+                    <MapPin className="w-3 h-3 text-[#585123]" />
                     {st.area}
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="text-[11px] text-emerald-400 font-bold">
+                  <span className="text-[11px] text-[#585123] font-bold">
                     {st.families} families fulfilled
                   </span>
                 </div>
@@ -140,12 +140,12 @@ export function CampaignDetailsModal({
         </div>
 
         {/* Blockchain proof */}
-        <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between font-mono text-[11px]">
-          <div className="flex items-center gap-1.5 text-slate-400">
-            <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
+        <div className="p-3.5 rounded-xl bg-[#fbf9f6] border border-[#eadecd] flex items-center justify-between font-mono text-[11px]">
+          <div className="flex items-center gap-1.5 text-[#6e5c54]">
+            <ShieldCheck className="w-3.5 h-3.5 text-[#585123]" />
             <span>Base Sepolia Pool Reference</span>
           </div>
-          <span className="text-cyan-400">0x8f2d...4c19a</span>
+          <span className="text-[#772f1a] font-bold">0x6767...7A9C</span>
         </div>
 
         {/* Action Buttons */}

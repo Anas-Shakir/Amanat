@@ -10,11 +10,11 @@ import {
   Ticket, 
   Store, 
   Clock, 
-  FileText,
-  Copy,
-  CheckCircle2,
-  ExternalLink,
-  Send
+  FileText, 
+  Copy, 
+  CheckCircle2, 
+  Send,
+  Check
 } from "lucide-react";
 import { useState } from "react";
 import { formatCurrencyPKR } from "@/lib/utils";
@@ -80,67 +80,67 @@ export function HouseholdDetailsModal({
       onClose={onClose}
       title={`Household: ${household.householdId}`}
       description="Field Verification & Entitlement Profile"
-      className="max-w-xl"
+      className="max-w-xl bg-white"
     >
-      <div className="space-y-5 text-xs text-slate-300">
+      <div className="space-y-5 text-xs text-[#2b1712]">
         {/* Top Badges */}
         <div className="flex items-center justify-between">
           <Badge variant={household.status === "VERIFIED" ? "verified" : "pending"}>
             {household.status === "VERIFIED" ? "Field Verified (Dadu)" : "Pending Survey"}
           </Badge>
-          <span className="font-mono text-indigo-400 font-bold text-sm">
+          <span className="font-mono text-[#772f1a] font-black text-sm">
             {household.householdId}
           </span>
         </div>
 
         {/* Core Info Grid */}
-        <div className="grid grid-cols-2 gap-3 bg-slate-950 p-4 rounded-2xl border border-slate-800">
+        <div className="grid grid-cols-2 gap-3 bg-[#fbf9f6] p-4 rounded-2xl border border-[#eadecd]">
           <div>
-            <span className="text-slate-400 text-[11px]">Head of Household</span>
-            <div className="font-bold text-white text-sm mt-0.5">{household.headOfFamily}</div>
+            <span className="text-[#6e5c54] font-semibold text-[11px]">Head of Household</span>
+            <div className="font-bold text-[#2b1712] text-sm mt-0.5">{household.headOfFamily}</div>
           </div>
           <div>
-            <span className="text-slate-400 text-[11px]">Family Size</span>
-            <div className="font-bold text-white text-sm mt-0.5">{household.familySize} Members</div>
+            <span className="text-[#6e5c54] font-semibold text-[11px]">Family Size</span>
+            <div className="font-bold text-[#2b1712] text-sm mt-0.5">{household.familySize} Members</div>
           </div>
           <div>
-            <span className="text-slate-400 text-[11px]">Location</span>
-            <div className="text-slate-200 mt-0.5 flex items-center gap-1">
-              <MapPin className="w-3 h-3 text-emerald-400" />
+            <span className="text-[#6e5c54] font-semibold text-[11px]">Location</span>
+            <div className="text-[#2b1712] font-medium mt-0.5 flex items-center gap-1">
+              <MapPin className="w-3 h-3 text-[#585123]" />
               {household.area}
             </div>
           </div>
           <div>
-            <span className="text-slate-400 text-[11px]">Associated Pool</span>
-            <div className="text-slate-200 mt-0.5 truncate">{household.campaignTitle || "Emergency Food"}</div>
+            <span className="text-[#6e5c54] font-semibold text-[11px]">Associated Pool</span>
+            <div className="text-[#2b1712] font-medium mt-0.5 truncate">{household.campaignTitle || "Emergency Food"}</div>
           </div>
         </div>
 
         {/* Assessment Notes */}
-        <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-1.5">
-          <div className="text-slate-400 font-semibold uppercase tracking-wider flex items-center gap-1 text-[11px]">
-            <FileText className="w-3.5 h-3.5 text-cyan-400" />
+        <div className="bg-[#fbf9f6] p-4 rounded-2xl border border-[#eadecd] space-y-1.5">
+          <div className="text-[#772f1a] font-bold uppercase tracking-wider flex items-center gap-1 text-[11px]">
+            <FileText className="w-3.5 h-3.5 text-[#f58549]" />
             <span>Field Assessment Notes (Off-Chain Only)</span>
           </div>
-          <p className="text-slate-200 text-xs leading-relaxed italic">
+          <p className="text-[#2b1712] text-xs leading-relaxed italic">
             "{household.assessment}"
           </p>
         </div>
 
         {/* Voucher & Entitlement Card */}
-        <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950/30 p-4 rounded-2xl border border-emerald-500/40 space-y-3">
+        <div className="bg-[#fbf9f6] p-4 rounded-2xl border border-[#eadecd] space-y-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
-              <Ticket className="w-4 h-4" />
+            <div className="flex items-center gap-1.5 text-[#772f1a] font-bold">
+              <Ticket className="w-4 h-4 text-[#f58549]" />
               <span>Active Beneficiary Voucher</span>
             </div>
-            <span className="text-slate-400 text-[11px]">Valid 30 Days</span>
+            <span className="text-[#6e5c54] text-[11px] font-semibold">Valid 30 Days</span>
           </div>
 
-          <div className="flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-slate-800">
+          <div className="flex items-center justify-between bg-white p-3 rounded-xl border border-[#eadecd] shadow-sm">
             <div>
-              <div className="text-[10px] text-slate-400 uppercase font-semibold">Voucher PIN</div>
-              <div className="text-2xl font-mono font-black text-white tracking-widest mt-0.5">
+              <div className="text-[10px] text-[#6e5c54] uppercase font-bold">Voucher PIN</div>
+              <div className="text-2xl font-mono font-black text-[#772f1a] tracking-widest mt-0.5">
                 {household.lastVoucherCode || "4827"}
               </div>
             </div>
@@ -152,7 +152,7 @@ export function HouseholdDetailsModal({
                 onClick={copyVoucherCode}
                 className="text-xs"
               >
-                <Copy className="w-3.5 h-3.5" />
+                {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                 <span>{copied ? "Copied" : "Copy Code"}</span>
               </Button>
               <Button
@@ -160,17 +160,17 @@ export function HouseholdDetailsModal({
                 variant="primary"
                 disabled={isSendingNotif}
                 onClick={handleSendNotification}
-                className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white"
+                className="text-xs"
               >
                 {isSendingNotif ? (
                   <span>Sending...</span>
                 ) : notifSent ? (
-                  <span className="flex items-center gap-1 text-emerald-200">
+                  <span className="flex items-center gap-1">
                     <CheckCircle2 className="w-3.5 h-3.5" /> Sent!
                   </span>
                 ) : (
                   <span className="flex items-center gap-1">
-                    <Send className="w-3.5 h-3.5" /> Send SMS/WA
+                    <Send className="w-3.5 h-3.5" /> Send SMS
                   </span>
                 )}
               </Button>
@@ -178,15 +178,15 @@ export function HouseholdDetailsModal({
           </div>
 
           <div className="grid grid-cols-2 gap-2 text-xs pt-1">
-            <div className="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800">
-              <span className="text-slate-400">Total Allocated:</span>
-              <div className="font-bold text-white text-sm mt-0.5">
+            <div className="p-2.5 rounded-lg bg-white border border-[#eadecd]">
+              <span className="text-[#6e5c54] font-semibold">Total Allocated:</span>
+              <div className="font-bold text-[#772f1a] text-sm mt-0.5">
                 {formatCurrencyPKR(household.entitlementAmount)}
               </div>
             </div>
-            <div className="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800">
-              <span className="text-slate-400">Remaining Balance:</span>
-              <div className="font-bold text-emerald-400 text-sm mt-0.5">
+            <div className="p-2.5 rounded-lg bg-white border border-[#eadecd]">
+              <span className="text-[#6e5c54] font-semibold">Remaining Balance:</span>
+              <div className="font-bold text-[#585123] text-sm mt-0.5">
                 {formatCurrencyPKR(household.remainingAmount)}
               </div>
             </div>
@@ -195,25 +195,25 @@ export function HouseholdDetailsModal({
 
         {/* Redemption History */}
         <div className="space-y-2">
-          <h4 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-            <Store className="w-3.5 h-3.5 text-cyan-400" />
+          <h4 className="text-xs font-bold text-[#772f1a] uppercase tracking-wider flex items-center gap-1.5">
+            <Store className="w-3.5 h-3.5 text-[#f58549]" />
             <span>Store Fulfillment History</span>
           </h4>
           <div className="space-y-1.5">
             {sampleRedemptions.map((r, i) => (
               <div
                 key={i}
-                className="p-3 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between"
+                className="p-3 rounded-xl bg-[#fbf9f6] border border-[#eadecd] flex items-center justify-between"
               >
                 <div>
-                  <div className="font-semibold text-white">{r.store}</div>
-                  <div className="text-[10px] text-slate-400 font-mono flex items-center gap-1 mt-0.5">
-                    <Clock className="w-3 h-3 text-slate-500" />
+                  <div className="font-bold text-[#2b1712]">{r.store}</div>
+                  <div className="text-[10px] text-[#6e5c54] font-mono flex items-center gap-1 mt-0.5">
+                    <Clock className="w-3 h-3 text-[#6e5c54]" />
                     <span>{r.timestamp} • Tx: {r.txHash}</span>
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs font-bold text-emerald-400">
+                  <span className="text-xs font-bold text-[#585123]">
                     {formatCurrencyPKR(r.amount)}
                   </span>
                 </div>

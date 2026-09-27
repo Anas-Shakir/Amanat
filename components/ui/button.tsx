@@ -3,25 +3,25 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none cursor-pointer active:scale-[0.98]",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f58549] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none cursor-pointer active:scale-[0.97]",
   {
     variants: {
       variant: {
         primary:
-          "bg-emerald-600 text-white hover:bg-emerald-500 shadow-md shadow-emerald-950/50 hover:shadow-emerald-900/40",
+          "bg-[#f58549] text-white hover:bg-[#e07133] shadow-sm shadow-[#f58549]/30",
         secondary:
-          "bg-slate-800 text-slate-100 hover:bg-slate-700 border border-slate-700 hover:border-slate-600",
+          "bg-[#772f1a] text-white hover:bg-[#521f11] shadow-sm shadow-[#772f1a]/20",
         outline:
-          "border border-slate-700 bg-transparent text-slate-200 hover:bg-slate-850 hover:text-white hover:border-slate-600",
+          "border border-[#f2a65a] bg-white text-[#772f1a] hover:bg-[#fdf8f2] hover:border-[#f58549]",
         ghost:
-          "text-slate-300 hover:bg-slate-800/80 hover:text-white",
+          "text-[#772f1a] hover:bg-[#f5f0e8] hover:text-[#521f11]",
         danger:
-          "bg-rose-600 text-white hover:bg-rose-500 shadow-md shadow-rose-950/50",
+          "bg-[#943b22] text-white hover:bg-[#772f1a] shadow-sm",
         accent:
-          "bg-cyan-600 text-white hover:bg-cyan-500 shadow-md shadow-cyan-950/50",
-        // Specialized high-contrast merchant action button for mobile
+          "bg-[#585123] text-white hover:bg-[#736b32] shadow-sm shadow-[#585123]/25",
+        // High-contrast merchant action button for mobile
         merchant:
-          "bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black text-lg py-4 px-6 rounded-2xl shadow-xl shadow-emerald-950 hover:brightness-110 active:brightness-90",
+          "bg-[#f58549] text-white font-extrabold text-lg py-4 px-6 rounded-2xl shadow-lg shadow-[#f58549]/30 hover:bg-[#e07133] active:scale-[0.96]",
       },
       size: {
         sm: "h-8 px-3 text-xs rounded-lg",

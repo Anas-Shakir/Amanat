@@ -127,7 +127,7 @@ export default function DonorPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-8">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#eadecd] pb-6">
         <div>
           <div className="flex items-center gap-2 mb-2">
             <Badge variant="emerald">
@@ -136,21 +136,21 @@ export default function DonorPage() {
             </Badge>
             <Badge variant="onChain">Base Sepolia Relayer Active</Badge>
           </div>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight">
+          <h1 className="text-3xl font-black text-[#772f1a] tracking-tight">
             Verifiable Aid Campaigns & Impact Telemetry
           </h1>
-          <p className="text-slate-400 text-sm mt-1 max-w-2xl">
+          <p className="text-[#6e5c54] text-sm mt-1 max-w-2xl">
             Entrust funds directly into community aid pools. Follow every rupee as it converts into verified food packages at local Dadu kiryana stores.
           </p>
         </div>
 
         {/* View Tab Switcher & Pool Creation */}
         <div className="flex items-center gap-3 self-start md:self-center">
-          <div className="flex items-center p-1 rounded-xl bg-slate-900 border border-slate-800 text-xs font-semibold">
+          <div className="flex items-center p-1 rounded-xl bg-[#f5f0e8] border border-[#eadecd] text-xs font-bold">
             <button
               onClick={() => setViewTab("POOLS")}
               className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
-                viewTab === "POOLS" ? "bg-slate-800 text-white shadow" : "text-slate-400 hover:text-white"
+                viewTab === "POOLS" ? "bg-[#772f1a] text-white shadow-xs" : "text-[#6e5c54] hover:text-[#772f1a]"
               }`}
             >
               <Layers className="w-3.5 h-3.5" />
@@ -159,19 +159,19 @@ export default function DonorPage() {
             <button
               onClick={() => setViewTab("MAP")}
               className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
-                viewTab === "MAP" ? "bg-emerald-950 text-emerald-300 border border-emerald-500/40 shadow" : "text-slate-400 hover:text-white"
+                viewTab === "MAP" ? "bg-[#585123] text-white shadow-xs" : "text-[#6e5c54] hover:text-[#772f1a]"
               }`}
             >
-              <MapPin className="w-3.5 h-3.5 text-emerald-400" />
+              <MapPin className="w-3.5 h-3.5" />
               <span>Geographic Map</span>
             </button>
             <button
               onClick={() => setViewTab("ANALYTICS")}
               className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
-                viewTab === "ANALYTICS" ? "bg-cyan-950 text-cyan-300 border border-cyan-500/40 shadow" : "text-slate-400 hover:text-white"
+                viewTab === "ANALYTICS" ? "bg-[#f58549] text-white shadow-xs" : "text-[#6e5c54] hover:text-[#772f1a]"
               }`}
             >
-              <BarChart3 className="w-3.5 h-3.5 text-cyan-400" />
+              <BarChart3 className="w-3.5 h-3.5" />
               <span>Live Analytics</span>
             </button>
           </div>
@@ -195,7 +195,7 @@ export default function DonorPage() {
           value={formatCurrencyPKR(totalFundedAll)}
           subtitle="Committed across all pools"
           icon={<Coins className="w-4 h-4" />}
-          accentColor="cyan"
+          accentColor="amber"
         />
         <StatCard
           title="Store Handover Executed"
@@ -209,14 +209,14 @@ export default function DonorPage() {
           value={`${totalReachedHouseholdsAll} Families`}
           subtitle="Verified Dadu entitlements"
           icon={<Users className="w-4 h-4" />}
-          accentColor="indigo"
+          accentColor="cyan"
         />
         <StatCard
           title="Settlement Security"
           value="100% Verifiable"
           subtitle="Base Sepolia Audit Log"
           icon={<ShieldCheck className="w-4 h-4" />}
-          accentColor="amber"
+          accentColor="emerald"
         />
       </div>
 
@@ -235,33 +235,33 @@ export default function DonorPage() {
               />
             </div>
 
-            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-900 border border-slate-800 self-start sm:self-auto">
+            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[#f5f0e8] border border-[#eadecd] self-start sm:self-auto">
               <button
                 onClick={() => setFilterMode("ALL")}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                   filterMode === "ALL"
-                    ? "bg-slate-800 text-white shadow"
-                    : "text-slate-400 hover:text-slate-200"
+                    ? "bg-[#772f1a] text-white shadow-xs"
+                    : "text-[#6e5c54] hover:text-[#772f1a]"
                 }`}
               >
                 All Pools
               </button>
               <button
                 onClick={() => setFilterMode("EMERGENCY")}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                   filterMode === "EMERGENCY"
-                    ? "bg-rose-950 text-rose-300 border border-rose-800/50 shadow"
-                    : "text-slate-400 hover:text-slate-200"
+                    ? "bg-[#943b22] text-white shadow-xs"
+                    : "text-[#6e5c54] hover:text-[#772f1a]"
                 }`}
               >
                 Emergency Relief
               </button>
               <button
                 onClick={() => setFilterMode("COMMUNITY")}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                   filterMode === "COMMUNITY"
-                    ? "bg-emerald-950 text-emerald-300 border border-emerald-800/50 shadow"
-                    : "text-slate-400 hover:text-slate-200"
+                    ? "bg-[#585123] text-white shadow-xs"
+                    : "text-[#6e5c54] hover:text-[#772f1a]"
                 }`}
               >
                 Community Welfare
@@ -276,31 +276,31 @@ export default function DonorPage() {
               const fulfillmentPercent = 72;
 
               return (
-                <Card key={c.id} className="flex flex-col justify-between hover:border-slate-700/80 group">
+                <Card key={c.id} className="flex flex-col justify-between hover:border-[#f2a65a] transition-all group shadow-2xs hover:shadow-md">
                   <CardHeader>
                     <div className="flex items-center justify-between gap-2 mb-2">
                       <Badge variant={c.mode === "EMERGENCY" ? "emergency" : "community"}>
                         {c.mode === "EMERGENCY" ? "Emergency Pool" : "Community Welfare"}
                       </Badge>
-                      <span className="text-[11px] font-mono text-slate-400">{c.category}</span>
+                      <span className="text-[11px] font-mono font-bold text-[#6e5c54]">{c.category}</span>
                     </div>
-                    <CardTitle className="group-hover:text-emerald-300 transition-colors">
+                    <CardTitle className="group-hover:text-[#f58549] transition-colors">
                       {c.title}
                     </CardTitle>
                     <CardDescription className="flex items-center gap-1">
-                      <MapPin className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                      <MapPin className="w-3.5 h-3.5 text-[#585123] flex-shrink-0" />
                       <span>{c.location}</span>
                     </CardDescription>
                   </CardHeader>
 
                   <CardContent className="space-y-5">
                     {/* Progress bars */}
-                    <div className="space-y-3 bg-slate-950/60 p-4 rounded-xl border border-slate-800/80">
+                    <div className="space-y-3 bg-[#fbf9f6] p-4 rounded-xl border border-[#eadecd]">
                       <ProgressBar
                         value={fundingPercent}
                         label="Funding Committed"
                         sublabel={`${formatCurrencyPKR(c.fundedAmount)} / ${formatCurrencyPKR(c.targetAmount)}`}
-                        colorVariant="cyan"
+                        colorVariant="amber"
                       />
 
                       <ProgressBar
@@ -313,15 +313,15 @@ export default function DonorPage() {
 
                     {/* Metrics */}
                     <div className="grid grid-cols-2 gap-2 text-xs">
-                      <div className="p-3 rounded-lg bg-slate-950/40 border border-slate-800">
-                        <div className="text-slate-400">Target Families</div>
-                        <div className="font-bold text-white mt-0.5">
+                      <div className="p-3 rounded-xl bg-[#fbf9f6] border border-[#eadecd]">
+                        <div className="text-[#6e5c54] font-semibold">Target Families</div>
+                        <div className="font-bold text-[#772f1a] mt-0.5">
                           {c.targetHouseholds} Households
                         </div>
                       </div>
-                      <div className="p-3 rounded-lg bg-slate-950/40 border border-slate-800">
-                        <div className="text-slate-400">Partner Shops</div>
-                        <div className="font-bold text-emerald-400 mt-0.5">
+                      <div className="p-3 rounded-xl bg-[#fbf9f6] border border-[#eadecd]">
+                        <div className="text-[#6e5c54] font-semibold">Partner Shops</div>
+                        <div className="font-bold text-[#585123] mt-0.5">
                           3 Kiryana Nodes
                         </div>
                       </div>
@@ -358,11 +358,11 @@ export default function DonorPage() {
         <div className="space-y-6 animate-in fade-in duration-200">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
             <div>
-              <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-emerald-400" />
+              <h2 className="text-xl font-bold text-[#772f1a] flex items-center gap-2">
+                <MapPin className="w-5 h-5 text-[#585123]" />
                 <span>Dadu District Geospatial Aid Infrastructure</span>
               </h2>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-xs text-[#6e5c54] mt-0.5">
                 Real-time node status across Johi, Mehar, Khairpur Nathan Shah, and Radhan. Click any merchant marker or relief zone to inspect liquidity and verified household metrics.
               </p>
             </div>
@@ -386,11 +386,11 @@ export default function DonorPage() {
             <Card className="lg:col-span-7 p-6 space-y-4">
               <div>
                 <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5 text-emerald-400" />
+                  <TrendingUp className="w-5 h-5 text-[#585123]" />
                   <span>Funding vs Kiryana Fulfillment Velocity</span>
                 </CardTitle>
                 <CardDescription>
-                  Tracking the timeline from donor deposit (Cyan) to physical goods handover at Dadu stores (Emerald).
+                  Tracking the timeline from donor deposit (Terracotta) to physical goods handover at Dadu stores (Olive Green).
                 </CardDescription>
               </div>
               <FulfillmentChart />
@@ -400,7 +400,7 @@ export default function DonorPage() {
             <Card className="lg:col-span-5 p-6 space-y-4">
               <div>
                 <CardTitle className="flex items-center gap-2">
-                  <MapPin className="w-5 h-5 text-cyan-400" />
+                  <MapPin className="w-5 h-5 text-[#772f1a]" />
                   <span>Union Council Aid Distribution</span>
                 </CardTitle>
                 <CardDescription>
@@ -415,7 +415,7 @@ export default function DonorPage() {
           <Card className="p-6 space-y-4">
             <div>
               <CardTitle className="flex items-center gap-2">
-                <Store className="w-5 h-5 text-amber-400" />
+                <Store className="w-5 h-5 text-[#f58549]" />
                 <span>Kiryana Store Fulfillment Velocity Leaderboard</span>
               </CardTitle>
               <CardDescription>
@@ -455,20 +455,20 @@ export default function DonorPage() {
       >
         {isFundingSuccess ? (
           <div className="text-center py-6 space-y-4">
-            <div className="w-16 h-16 rounded-full bg-emerald-950 border-2 border-emerald-400 flex items-center justify-center text-emerald-400 mx-auto animate-bounce">
+            <div className="w-16 h-16 rounded-full bg-[#f5f4ed] border-2 border-[#585123] flex items-center justify-center text-[#585123] mx-auto animate-bounce">
               <CheckCircle2 className="w-8 h-8" />
             </div>
-            <div className="text-emerald-300 font-bold text-lg">
+            <div className="text-[#585123] font-black text-xl">
               {formatCurrencyPKR(Number(fundAmount))} Allocated
             </div>
-            <p className="text-xs text-slate-400 font-mono">
+            <p className="text-xs text-[#6e5c54] font-mono font-bold">
               Tx Hash: {lastTxHash}
             </p>
           </div>
         ) : (
           <form onSubmit={handleFundSubmit} className="space-y-5">
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+              <label className="text-xs font-bold text-[#772f1a] uppercase tracking-wider">
                 Contribution Amount (PKR)
               </label>
               <Input
@@ -488,10 +488,10 @@ export default function DonorPage() {
                   type="button"
                   key={amt}
                   onClick={() => setFundAmount(amt)}
-                  className={`flex-1 py-2 text-xs font-semibold rounded-lg border transition-all ${
+                  className={`flex-1 py-2 text-xs font-bold rounded-xl border transition-all ${
                     fundAmount === amt
-                      ? "bg-emerald-950 text-emerald-300 border-emerald-500/50"
-                      : "bg-slate-950 text-slate-400 border-slate-800 hover:border-slate-700"
+                      ? "bg-[#fdf8f2] text-[#772f1a] border-[#f58549]"
+                      : "bg-white text-[#6e5c54] border-[#eadecd] hover:border-[#f2a65a]"
                   }`}
                 >
                   {formatCurrencyPKR(Number(amt))}
@@ -499,12 +499,12 @@ export default function DonorPage() {
               ))}
             </div>
 
-            <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-400 space-y-1">
-              <div className="text-slate-300 font-semibold flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+            <div className="p-3.5 rounded-xl bg-[#f5f4ed] border border-[#d4d0b6] text-xs text-[#585123] space-y-1">
+              <div className="text-[#585123] font-bold flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-[#585123]" />
                 <span>Zero Intermediary Leakage Guarantee</span>
               </div>
-              <p className="text-[11px] leading-relaxed">
+              <p className="text-[11px] leading-relaxed text-[#6e5c54]">
                 Funds are unlocked only upon physical goods handover confirmed by authorized kiryana stores in Dadu.
               </p>
             </div>

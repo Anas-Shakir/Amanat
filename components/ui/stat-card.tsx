@@ -23,37 +23,29 @@ export function StatCard({
   accentColor = "emerald",
   className,
 }: StatCardProps) {
-  const colorStyles = {
-    emerald: "text-emerald-400 border-emerald-500/20 bg-emerald-950/20",
-    cyan: "text-cyan-400 border-cyan-500/20 bg-cyan-950/20",
-    rose: "text-rose-400 border-rose-500/20 bg-rose-950/20",
-    amber: "text-amber-400 border-amber-500/20 bg-amber-950/20",
-    indigo: "text-indigo-400 border-indigo-500/20 bg-indigo-950/20",
-  };
-
   const iconColorStyles = {
-    emerald: "bg-emerald-950/80 border-emerald-600/40 text-emerald-400",
-    cyan: "bg-cyan-950/80 border-cyan-600/40 text-cyan-400",
-    rose: "bg-rose-950/80 border-rose-600/40 text-rose-400",
-    amber: "bg-amber-950/80 border-amber-600/40 text-amber-400",
-    indigo: "bg-indigo-950/80 border-indigo-600/40 text-indigo-400",
+    emerald: "bg-[#585123] text-white shadow-xs",
+    cyan: "bg-[#772f1a] text-white shadow-xs",
+    rose: "bg-[#943b22] text-white shadow-xs",
+    amber: "bg-[#f58549] text-white shadow-xs",
+    indigo: "bg-[#772f1a] text-white shadow-xs",
   };
 
   return (
     <div
       className={cn(
-        "p-5 rounded-2xl border border-slate-800/80 bg-slate-900/90 shadow-lg relative overflow-hidden transition-all hover:border-slate-700/80",
+        "p-5 rounded-2xl border border-[#eadecd] bg-[#ffffff] shadow-xs relative overflow-hidden transition-all hover:border-[#f2a65a] hover:shadow-sm",
         className
       )}
     >
       <div className="flex items-center justify-between gap-2">
-        <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+        <span className="text-xs font-bold text-[#6e5c54] uppercase tracking-wider">
           {title}
         </span>
         {icon && (
           <div
             className={cn(
-              "w-8 h-8 rounded-xl border flex items-center justify-center text-sm",
+              "w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold",
               iconColorStyles[accentColor]
             )}
           >
@@ -62,7 +54,7 @@ export function StatCard({
         )}
       </div>
 
-      <div className="mt-2 text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+      <div className="mt-2 text-2xl sm:text-3xl font-black text-[#772f1a] tracking-tight">
         {value}
       </div>
 
@@ -71,14 +63,14 @@ export function StatCard({
           {trend && (
             <span
               className={cn(
-                "font-semibold",
-                trend.positive ? "text-emerald-400" : "text-rose-400"
+                "font-bold",
+                trend.positive ? "text-[#585123]" : "text-[#943b22]"
               )}
             >
               {trend.label}
             </span>
           )}
-          {subtitle && <span className="text-slate-500">{subtitle}</span>}
+          {subtitle && <span className="text-[#6e5c54] font-medium">{subtitle}</span>}
         </div>
       )}
     </div>

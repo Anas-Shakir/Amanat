@@ -30,14 +30,14 @@ interface CustomTooltipProps {
 function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-slate-950/95 border border-slate-800 p-3 rounded-xl shadow-2xl text-xs space-y-1">
-        <div className="font-bold text-white mb-1">{label}</div>
-        <div className="text-cyan-400 flex items-center justify-between gap-3">
-          <span>Pool Funded:</span>
+      <div className="bg-white border border-[#eadecd] p-3 rounded-xl shadow-lg text-xs space-y-1">
+        <div className="font-bold text-[#772f1a] mb-1">{label}</div>
+        <div className="text-[#f58549] flex items-center justify-between gap-3">
+          <span className="font-semibold">Pool Funded:</span>
           <span className="font-mono font-bold">{formatCurrencyPKR(payload[0]?.value || 0)}</span>
         </div>
-        <div className="text-emerald-400 flex items-center justify-between gap-3">
-          <span>Store Fulfilled:</span>
+        <div className="text-[#585123] flex items-center justify-between gap-3">
+          <span className="font-semibold">Store Fulfilled:</span>
           <span className="font-mono font-bold">{formatCurrencyPKR(payload[1]?.value || 0)}</span>
         </div>
       </div>
@@ -51,26 +51,16 @@ export function FulfillmentChart() {
     <div className="h-64 w-full">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={sampleData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-          <defs>
-            <linearGradient id="colorFunded" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.3} />
-              <stop offset="95%" stopColor="#06b6d4" stopOpacity={0} />
-            </linearGradient>
-            <linearGradient id="colorFulfilled" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#10b981" stopOpacity={0.4} />
-              <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
-            </linearGradient>
-          </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="#eadecd" vertical={false} />
           <XAxis 
             dataKey="day" 
-            stroke="#64748b" 
+            stroke="#6e5c54" 
             fontSize={11} 
             tickLine={false} 
             axisLine={false} 
           />
           <YAxis 
-            stroke="#64748b" 
+            stroke="#6e5c54" 
             fontSize={10} 
             tickLine={false} 
             axisLine={false}
@@ -81,19 +71,19 @@ export function FulfillmentChart() {
             type="monotone"
             dataKey="funded"
             name="Funds Committed"
-            stroke="#06b6d4"
+            stroke="#f58549"
             strokeWidth={2}
-            fillOpacity={1}
-            fill="url(#colorFunded)"
+            fill="#f2a65a"
+            fillOpacity={0.25}
           />
           <Area
             type="monotone"
             dataKey="fulfilled"
             name="Goods Handed Over"
-            stroke="#10b981"
+            stroke="#585123"
             strokeWidth={2.5}
-            fillOpacity={1}
-            fill="url(#colorFulfilled)"
+            fill="#585123"
+            fillOpacity={0.2}
           />
         </AreaChart>
       </ResponsiveContainer>

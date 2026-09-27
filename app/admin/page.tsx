@@ -121,19 +121,19 @@ export default function AdminPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#eadecd] pb-6">
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <Badge variant="amber">
+            <Badge variant="emerald">
               <Activity className="w-3.5 h-3.5" />
               <span>Amanat Infrastructure Control Plane</span>
             </Badge>
             <Badge variant="onChain">Base Sepolia Chain #84532</Badge>
           </div>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight">
+          <h1 className="text-3xl font-black text-[#772f1a] tracking-tight">
             System Administration & Relayer Ledger
           </h1>
-          <p className="text-slate-400 text-sm mt-1 max-w-2xl">
+          <p className="text-[#6e5c54] text-sm mt-1 max-w-2xl">
             Audit cryptographic settlement events, inspect server-relayer gas balances, and manage regional emergency protocols for Dadu.
           </p>
         </div>
@@ -143,24 +143,24 @@ export default function AdminPage() {
             size="sm"
             variant="primary"
             onClick={() => setIsE2EOpen(true)}
-            className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-950/40"
+            className="text-xs"
           >
             <Zap className="w-3.5 h-3.5 mr-1.5" />
             <span>Run Complete E2E Flow</span>
           </Button>
 
           {/* Emergency Mode Switcher */}
-          <div className="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 flex items-center gap-4">
+          <div className="p-3.5 rounded-2xl bg-white border border-[#eadecd] flex items-center gap-4 shadow-2xs">
             <div className="text-left">
-              <div className="text-[10px] uppercase font-bold text-slate-400">Network Mode</div>
-              <div className="text-xs font-bold text-white flex items-center gap-1.5 mt-0.5">
+              <div className="text-[10px] uppercase font-bold text-[#6e5c54]">Network Mode</div>
+              <div className="text-xs font-bold text-[#2b1712] flex items-center gap-1.5 mt-0.5">
                 {isEmergencyMode ? (
-                  <span className="text-rose-400 flex items-center gap-1">
-                    <Flame className="w-3.5 h-3.5" /> Emergency Mode
+                  <span className="text-[#943b22] font-black flex items-center gap-1">
+                    <Flame className="w-3.5 h-3.5 text-[#943b22]" /> Emergency Mode
                   </span>
                 ) : (
-                  <span className="text-emerald-400 flex items-center gap-1">
-                    <ShieldCheck className="w-3.5 h-3.5" /> Community Mode
+                  <span className="text-[#585123] font-black flex items-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5 text-[#585123]" /> Community Mode
                   </span>
                 )}
               </div>
@@ -222,26 +222,26 @@ export default function AdminPage() {
       </div>
 
       {/* Relayer Node Details Card */}
-      <Card className="p-6 bg-slate-900/90 border border-slate-800 space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
-          <div className="flex items-center gap-2 text-white font-bold text-sm">
-            <Radio className="w-4 h-4 text-cyan-400 animate-pulse" />
+      <Card className="p-6 bg-white border border-[#eadecd] space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#f2e8dc] pb-3">
+          <div className="flex items-center gap-2 text-[#772f1a] font-bold text-sm">
+            <Radio className="w-4 h-4 text-[#585123] animate-pulse" />
             <span>Gasless Relayer Service Health</span>
           </div>
-          <span className="text-xs font-mono text-cyan-400">
+          <span className="text-xs font-mono font-bold text-[#585123] bg-[#f5f4ed] px-2.5 py-0.5 rounded-full">
             Chain ID: 84532 (Base Sepolia)
           </span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-          <div className="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-1">
-            <span className="text-slate-400 font-semibold">Relayer Wallet Address:</span>
-            <div className="font-mono text-slate-200 truncate">{relayerInfo.relayerAddress}</div>
+          <div className="bg-[#fbf9f6] p-3.5 rounded-xl border border-[#eadecd] space-y-1">
+            <span className="text-[#6e5c54] font-bold">Relayer Wallet Address:</span>
+            <div className="font-mono text-[#772f1a] font-bold truncate">{relayerInfo.relayerAddress}</div>
           </div>
 
-          <div className="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-1">
-            <span className="text-slate-400 font-semibold">Smart Contract Address:</span>
-            <div className="font-mono text-slate-200 truncate">{relayerInfo.contractAddress}</div>
+          <div className="bg-[#fbf9f6] p-3.5 rounded-xl border border-[#eadecd] space-y-1">
+            <span className="text-[#6e5c54] font-bold">Smart Contract Address:</span>
+            <div className="font-mono text-[#772f1a] font-bold truncate">{relayerInfo.contractAddress}</div>
           </div>
         </div>
       </Card>
@@ -262,7 +262,7 @@ export default function AdminPage() {
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-950/80 text-slate-400 border-b border-slate-800 uppercase tracking-wider font-semibold">
+              <thead className="bg-[#fbf9f6] text-[#772f1a] border-b border-[#eadecd] uppercase tracking-wider font-bold">
                 <tr>
                   <th className="py-3 px-4">Event ID</th>
                   <th className="py-3 px-4">Action</th>
@@ -273,30 +273,30 @@ export default function AdminPage() {
                   <th className="py-3 px-4">Timestamp</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800 text-slate-300">
+              <tbody className="divide-y divide-[#f2e8dc] text-[#2b1712]">
                 {auditLogs.map((log) => (
-                  <tr key={log.id} className="hover:bg-slate-850/50 transition-colors">
-                    <td className="py-3.5 px-4 font-mono font-bold text-amber-400">{log.id}</td>
-                    <td className="py-3.5 px-4 font-semibold text-white">{log.action}</td>
-                    <td className="py-3.5 px-4 text-slate-400">{log.actor}</td>
-                    <td className="py-3.5 px-4 text-slate-200">{log.entity}</td>
-                    <td className="py-3.5 px-4 font-bold text-emerald-400">{log.amount}</td>
-                    <td className="py-3.5 px-4 font-mono text-[11px] text-cyan-400">
+                  <tr key={log.id} className="hover:bg-[#fdf8f2] transition-colors font-medium">
+                    <td className="py-3.5 px-4 font-mono font-bold text-[#772f1a]">{log.id}</td>
+                    <td className="py-3.5 px-4 font-bold text-[#2b1712]">{log.action}</td>
+                    <td className="py-3.5 px-4 text-[#6e5c54]">{log.actor}</td>
+                    <td className="py-3.5 px-4 text-[#2b1712] font-medium">{log.entity}</td>
+                    <td className="py-3.5 px-4 font-black text-[#585123]">{log.amount}</td>
+                    <td className="py-3.5 px-4 font-mono text-[11px] text-[#f58549] font-bold">
                       {log.txHash.startsWith("0x") ? (
                         <a
                           href={`https://sepolia.basescan.org/tx/${log.txHash}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 hover:underline hover:text-cyan-300"
+                          className="inline-flex items-center gap-1 hover:underline hover:text-[#e07133]"
                         >
                           <span className="truncate max-w-[140px]">{log.txHash}</span>
                           <ExternalLink className="w-3 h-3 flex-shrink-0" />
                         </a>
                       ) : (
-                        <span className="text-slate-400">{log.txHash}</span>
+                        <span className="text-[#6e5c54]">{log.txHash}</span>
                       )}
                     </td>
-                    <td className="py-3.5 px-4 text-slate-500 whitespace-nowrap">{log.timestamp}</td>
+                    <td className="py-3.5 px-4 text-[#6e5c54] whitespace-nowrap">{log.timestamp}</td>
                   </tr>
                 ))}
               </tbody>

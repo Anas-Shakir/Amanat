@@ -21,7 +21,7 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const viewport: Viewport = {
-  themeColor: "#090d16",
+  themeColor: "#772f1a",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -43,77 +43,77 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${jakarta.variable} dark`}>
+    <html lang="en" className={`${inter.variable} ${jakarta.variable}`}>
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
       </head>
-      <body className="min-h-screen bg-[#070b12] text-slate-100 antialiased selection:bg-emerald-500/30 selection:text-emerald-200 flex flex-col font-sans">
+      <body className="min-h-screen bg-[#fbf9f6] text-[#2b1712] antialiased selection:bg-[#fae4cb] selection:text-[#772f1a] flex flex-col font-sans">
         <PWAProvider>
           <AuthProvider>
             <OfflineBanner />
             {/* Global Top Notification / Mode Banner */}
-            <div className="bg-gradient-to-r from-emerald-950/70 via-cyan-950/60 to-slate-900 border-b border-emerald-500/20 px-4 py-1.5 text-xs text-center flex items-center justify-center gap-2 text-emerald-300">
-              <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="font-medium tracking-wide">
-                Amanat Local Aid Network • Active Node: Dadu, Sindh • Verifiable on Base Sepolia
+            <div className="bg-[#772f1a] text-[#fae4cb] px-4 py-2 text-xs text-center flex items-center justify-center gap-2 border-b border-[#521f11]">
+              <span className="flex h-2 w-2 rounded-full bg-[#f58549] animate-pulse" />
+              <span className="font-semibold tracking-wide">
+                Amanat Local Aid Network • Active Node: Dadu, Sindh • Verifiable on Base Sepolia (#84532)
               </span>
             </div>
 
             {/* Global Navigation Header */}
-            <header className="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-[#070b12]/85 backdrop-blur-md">
+            <header className="sticky top-0 z-40 w-full border-b border-[#eadecd] bg-[#ffffff]/95 backdrop-blur-md shadow-xs">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-3 group">
-                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-white font-black text-lg shadow-lg shadow-emerald-900/30 group-hover:scale-105 transition-transform">
+                  <div className="w-10 h-10 rounded-xl bg-[#772f1a] flex items-center justify-center text-white font-black text-xl shadow-md shadow-[#772f1a]/20 group-hover:bg-[#521f11] transition-colors">
                     A
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-lg font-bold tracking-tight text-white group-hover:text-emerald-400 transition-colors">
+                    <span className="text-lg font-bold tracking-tight text-[#772f1a] group-hover:text-[#521f11] transition-colors">
                       Amanat
                     </span>
-                    <span className="text-[10px] uppercase tracking-widest text-emerald-400 font-semibold">
+                    <span className="text-[10px] uppercase tracking-widest text-[#585123] font-bold">
                       Local Aid Infra
                     </span>
                   </div>
                 </Link>
 
                 {/* Role Navigation Pills */}
-                <nav className="hidden lg:flex items-center gap-1.5 bg-slate-900/80 p-1 rounded-full border border-slate-800 text-xs font-medium">
+                <nav className="hidden lg:flex items-center gap-1.5 bg-[#f5f0e8] p-1.5 rounded-full border border-[#eadecd] text-xs font-semibold">
                   <Link
                     href="/map"
-                    className="px-3 py-1.5 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition-colors flex items-center gap-1"
+                    className="px-3.5 py-1.5 rounded-full text-[#6e5c54] hover:text-[#772f1a] hover:bg-[#ffffff] transition-all flex items-center gap-1.5"
                   >
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                    <span className="w-2 h-2 rounded-full bg-[#585123]" />
                     Aid Map
                   </Link>
                   <Link
                     href="/donor"
-                    className="px-3 py-1.5 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+                    className="px-3.5 py-1.5 rounded-full text-[#6e5c54] hover:text-[#772f1a] hover:bg-[#ffffff] transition-all"
                   >
                     Donor Portal
                   </Link>
                   <Link
                     href="/merchant"
-                    className="px-3 py-1.5 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+                    className="px-3.5 py-1.5 rounded-full text-[#6e5c54] hover:text-[#772f1a] hover:bg-[#ffffff] transition-all"
                   >
                     Merchant PWA
                   </Link>
                   <Link
                     href="/organization"
-                    className="px-3 py-1.5 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+                    className="px-3.5 py-1.5 rounded-full text-[#6e5c54] hover:text-[#772f1a] hover:bg-[#ffffff] transition-all"
                   >
                     Issuer & NGO
                   </Link>
                   <Link
                     href="/admin"
-                    className="px-3 py-1.5 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+                    className="px-3.5 py-1.5 rounded-full text-[#6e5c54] hover:text-[#772f1a] hover:bg-[#ffffff] transition-all"
                   >
                     Admin & Relayer
                   </Link>
                   <Link
                     href="/voucher"
-                    className="px-3 py-1.5 rounded-full text-emerald-300 bg-emerald-950/60 border border-emerald-500/30 hover:bg-emerald-900/60 transition-colors"
+                    className="px-3.5 py-1.5 rounded-full text-white bg-[#f58549] hover:bg-[#e07133] transition-all shadow-xs"
                   >
                     SMS Voucher
                   </Link>
@@ -133,18 +133,18 @@ export default function RootLayout({
             <InstallBanner />
 
             {/* Global Footer */}
-            <footer className="border-t border-slate-800/80 bg-[#05080e] py-8 px-4 sm:px-6 text-slate-400 text-xs">
+            <footer className="border-t border-[#eadecd] bg-[#f5f0e8] py-8 px-4 sm:px-6 text-[#6e5c54] text-xs">
               <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-2">
-                  <span className="font-semibold text-slate-200">Amanat</span> — Verifiable Local Aid Infrastructure for Dadu & Disaster-Prone Communities.
+                  <span className="font-bold text-[#772f1a]">Amanat</span> — Verifiable Local Aid Infrastructure for Dadu & Disaster-Prone Communities.
                 </div>
-                <div className="flex items-center gap-6 text-slate-500">
-                  <Link href="/map" className="hover:text-slate-300">Aid Map</Link>
-                  <Link href="/donor" className="hover:text-slate-300">Donors</Link>
-                  <Link href="/merchant" className="hover:text-slate-300">Merchants</Link>
-                  <Link href="/organization" className="hover:text-slate-300">Issuers</Link>
-                  <Link href="/admin" className="hover:text-slate-300">Audit Trail</Link>
-                  <Link href="/login" className="hover:text-slate-300">Login</Link>
+                <div className="flex items-center gap-6 text-[#6e5c54] font-medium">
+                  <Link href="/map" className="hover:text-[#772f1a]">Aid Map</Link>
+                  <Link href="/donor" className="hover:text-[#772f1a]">Donors</Link>
+                  <Link href="/merchant" className="hover:text-[#772f1a]">Merchants</Link>
+                  <Link href="/organization" className="hover:text-[#772f1a]">Issuers</Link>
+                  <Link href="/admin" className="hover:text-[#772f1a]">Audit Trail</Link>
+                  <Link href="/login" className="hover:text-[#772f1a]">Login</Link>
                 </div>
               </div>
             </footer>

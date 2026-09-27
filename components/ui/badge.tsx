@@ -8,30 +8,30 @@ const badgeVariants = cva(
     variants: {
       variant: {
         default:
-          "border border-slate-700 bg-slate-800/80 text-slate-200",
+          "border border-[#eadecd] bg-[#f5f0e8] text-[#772f1a]",
         outline:
-          "border border-slate-700 bg-transparent text-slate-300",
+          "border border-[#f2a65a] bg-transparent text-[#772f1a]",
         emerald:
-          "border border-emerald-500/30 bg-emerald-950/70 text-emerald-300",
+          "border border-[#d4d0b6] bg-[#f5f4ed] text-[#585123]",
         rose:
-          "border border-rose-500/30 bg-rose-950/70 text-rose-300",
+          "border border-[#f5c2b8] bg-[#fbf4f2] text-[#943b22]",
         amber:
-          "border border-amber-500/30 bg-amber-950/70 text-amber-300",
+          "border border-[#f7d7b5] bg-[#fdf8f2] text-[#e07133]",
         cyan:
-          "border border-cyan-500/30 bg-cyan-950/70 text-cyan-300",
+          "border border-[#d4d0b6] bg-[#f5f4ed] text-[#585123]",
         indigo:
-          "border border-indigo-500/30 bg-indigo-950/70 text-indigo-300",
+          "border border-[#f7d7b5] bg-[#fef4ee] text-[#772f1a]",
         // Status specific
         emergency:
-          "border border-rose-500/50 bg-gradient-to-r from-rose-950 to-red-950 text-rose-200 font-bold uppercase text-[10px] tracking-widest",
+          "border border-[#943b22] bg-[#772f1a] text-white font-bold uppercase text-[10px] tracking-widest",
         community:
-          "border border-emerald-500/50 bg-gradient-to-r from-emerald-950 to-teal-950 text-emerald-200 font-bold uppercase text-[10px] tracking-widest",
+          "border border-[#585123] bg-[#585123] text-white font-bold uppercase text-[10px] tracking-widest",
         verified:
-          "border border-emerald-500/40 bg-emerald-950/80 text-emerald-300 font-medium",
+          "border border-[#585123]/30 bg-[#f5f4ed] text-[#585123] font-bold",
         pending:
-          "border border-amber-500/40 bg-amber-950/80 text-amber-300 font-medium",
+          "border border-[#f58549]/30 bg-[#fef4ee] text-[#e07133] font-semibold",
         onChain:
-          "border border-cyan-500/40 bg-cyan-950/80 text-cyan-300 font-mono text-[11px]",
+          "border border-[#585123]/40 bg-[#f5f4ed] text-[#585123] font-mono text-[11px] font-bold",
       },
     },
     defaultVariants: {

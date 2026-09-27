@@ -6,7 +6,7 @@ interface ProgressBarProps {
   max?: number;
   label?: string;
   sublabel?: string;
-  colorVariant?: "emerald" | "cyan" | "rose" | "amber";
+  colorVariant?: "emerald" | "cyan" | "rose" | "amber" | "terracotta" | "olive" | "maroon" | "sand";
   heightClassName?: string;
   className?: string;
 }
@@ -16,32 +16,36 @@ export function ProgressBar({
   max = 100,
   label,
   sublabel,
-  colorVariant = "emerald",
+  colorVariant = "olive",
   heightClassName = "h-2.5",
   className,
 }: ProgressBarProps) {
   const percentage = Math.min(100, Math.max(0, (value / max) * 100));
 
-  const gradientStyles = {
-    emerald: "from-emerald-500 via-teal-400 to-emerald-400",
-    cyan: "from-cyan-500 via-sky-400 to-teal-400",
-    rose: "from-rose-500 via-red-400 to-amber-500",
-    amber: "from-amber-500 via-yellow-400 to-emerald-400",
+  const solidColorStyles: Record<string, string> = {
+    emerald: "bg-[#585123]",
+    olive: "bg-[#585123]",
+    cyan: "bg-[#772f1a]",
+    maroon: "bg-[#772f1a]",
+    rose: "bg-[#772f1a]",
+    amber: "bg-[#f58549]",
+    terracotta: "bg-[#f58549]",
+    sand: "bg-[#f2a65a]",
   };
 
   return (
     <div className={cn("space-y-1.5 w-full", className)}>
       {(label || sublabel) && (
-        <div className="flex justify-between items-center text-xs font-medium">
-          {label && <span className="text-slate-300">{label}</span>}
-          {sublabel && <span className="text-slate-400 font-mono">{sublabel}</span>}
+        <div className="flex justify-between items-center text-xs font-semibold">
+          {label && <span className="text-[#2b1712]">{label}</span>}
+          {sublabel && <span className="text-[#772f1a] font-mono font-bold">{sublabel}</span>}
         </div>
       )}
-      <div className={cn("w-full bg-slate-950 rounded-full overflow-hidden border border-slate-800", heightClassName)}>
+      <div className={cn("w-full bg-[#f4ede4] rounded-full overflow-hidden border border-[#eadecd]", heightClassName)}>
         <div
           className={cn(
-            "bg-gradient-to-r h-full rounded-full transition-all duration-500 ease-out",
-            gradientStyles[colorVariant]
+            "h-full rounded-full transition-all duration-300 ease-out",
+            solidColorStyles[colorVariant] || "bg-[#585123]"
           )}
           style={{ width: `${percentage}%` }}
         />

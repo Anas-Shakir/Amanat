@@ -140,19 +140,19 @@ export default function OrganizationPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#eadecd] pb-6">
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <Badge variant="indigo">
+            <Badge variant="emerald">
               <Users className="w-3.5 h-3.5" />
               <span>Authorized Relief Partner Node</span>
             </Badge>
-            <Badge variant="emerald">Sindh Relief Foundation (Dadu)</Badge>
+            <Badge variant="outline">Sindh Relief Foundation (Dadu)</Badge>
           </div>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight">
+          <h1 className="text-3xl font-black text-[#772f1a] tracking-tight">
             Household Registry & Entitlement Issuance
           </h1>
-          <p className="text-slate-400 text-sm mt-1 max-w-2xl">
+          <p className="text-[#6e5c54] text-sm mt-1 max-w-2xl">
             Register vulnerable families, conduct dignified assessments, and allocate food vouchers against approved aid pools. PII remains off-chain.
           </p>
         </div>
@@ -162,7 +162,7 @@ export default function OrganizationPage() {
             variant="outline"
             onClick={() => setIsCreateCampaignOpen(true)}
           >
-            <PlusCircle className="w-4 h-4" />
+            <PlusCircle className="w-4 h-4 text-[#772f1a]" />
             <span>Launch Aid Pool</span>
           </Button>
 
@@ -183,7 +183,7 @@ export default function OrganizationPage() {
           value={households.length}
           subtitle="Dadu field records"
           icon={<Users className="w-4 h-4" />}
-          accentColor="indigo"
+          accentColor="cyan"
         />
         <StatCard
           title="Total Aid Entrusted"
@@ -197,7 +197,7 @@ export default function OrganizationPage() {
           value={`${campaigns.length} Pools`}
           subtitle="Emergency & Community"
           icon={<Layers className="w-4 h-4" />}
-          accentColor="cyan"
+          accentColor="amber"
         />
       </div>
 
@@ -213,33 +213,33 @@ export default function OrganizationPage() {
           />
         </div>
 
-        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-900 border border-slate-800 self-start sm:self-auto">
+        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[#f5f0e8] border border-[#eadecd] self-start sm:self-auto">
           <button
             onClick={() => setStatusFilter("ALL")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
               statusFilter === "ALL"
-                ? "bg-slate-800 text-white shadow"
-                : "text-slate-400 hover:text-slate-200"
+                ? "bg-[#772f1a] text-white shadow-xs"
+                : "text-[#6e5c54] hover:text-[#772f1a]"
             }`}
           >
             All Families
           </button>
           <button
             onClick={() => setStatusFilter("VERIFIED")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
               statusFilter === "VERIFIED"
-                ? "bg-emerald-950 text-emerald-300 border border-emerald-800/50 shadow"
-                : "text-slate-400 hover:text-slate-200"
+                ? "bg-[#585123] text-white shadow-xs"
+                : "text-[#6e5c54] hover:text-[#772f1a]"
             }`}
           >
             Verified ({households.filter((h) => h.status === "VERIFIED").length})
           </button>
           <button
             onClick={() => setStatusFilter("PENDING")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
               statusFilter === "PENDING"
-                ? "bg-amber-950 text-amber-300 border border-amber-800/50 shadow"
-                : "text-slate-400 hover:text-slate-200"
+                ? "bg-[#f58549] text-white shadow-xs"
+                : "text-[#6e5c54] hover:text-[#772f1a]"
             }`}
           >
             Pending Survey
@@ -263,7 +263,7 @@ export default function OrganizationPage() {
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-950/80 text-slate-400 border-b border-slate-800 uppercase tracking-wider font-semibold">
+              <thead className="bg-[#fbf9f6] text-[#772f1a] border-b border-[#eadecd] uppercase tracking-wider font-bold">
                 <tr>
                   <th className="py-3 px-4">Household ID</th>
                   <th className="py-3 px-4">Head of Household</th>
@@ -277,30 +277,30 @@ export default function OrganizationPage() {
                   <th className="py-3 px-4">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800 text-slate-300">
+              <tbody className="divide-y divide-[#f2e8dc] text-[#2b1712]">
                 {filteredHouseholds.map((hh) => (
                   <tr
                     key={hh.id}
-                    className="hover:bg-slate-850/60 transition-colors cursor-pointer"
+                    className="hover:bg-[#fdf8f2] transition-colors cursor-pointer font-medium"
                     onClick={() => setInspectedHousehold(hh)}
                   >
-                    <td className="py-3.5 px-4 font-mono font-bold text-indigo-400">
+                    <td className="py-3.5 px-4 font-mono font-bold text-[#772f1a]">
                       {hh.householdId}
                     </td>
-                    <td className="py-3.5 px-4 font-medium text-white">{hh.headOfFamily}</td>
+                    <td className="py-3.5 px-4 font-bold text-[#2b1712]">{hh.headOfFamily}</td>
                     <td className="py-3.5 px-4">{hh.familySize} members</td>
-                    <td className="py-3.5 px-4 text-slate-300 truncate max-w-[160px]">
+                    <td className="py-3.5 px-4 text-[#6e5c54] truncate max-w-[160px]">
                       {hh.campaignTitle || "Emergency Food Pool"}
                     </td>
-                    <td className="py-3.5 px-4 text-slate-400">{hh.area}</td>
-                    <td className="py-3.5 px-4 font-semibold text-slate-200">
+                    <td className="py-3.5 px-4 text-[#6e5c54]">{hh.area}</td>
+                    <td className="py-3.5 px-4 font-semibold text-[#772f1a]">
                       {formatCurrencyPKR(hh.entitlementAmount)}
                     </td>
-                    <td className="py-3.5 px-4 font-bold text-emerald-400">
+                    <td className="py-3.5 px-4 font-black text-[#585123]">
                       {formatCurrencyPKR(hh.remainingAmount)}
                     </td>
                     <td className="py-3.5 px-4">
-                      <span className="font-mono font-bold text-amber-400 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-600/40">
+                      <span className="font-mono font-black text-[#f58549] bg-[#fef4ee] px-2.5 py-0.5 rounded-full border border-[#f7d7b5]">
                         {hh.lastVoucherCode || "4827"}
                       </span>
                     </td>
@@ -310,8 +310,8 @@ export default function OrganizationPage() {
                       </Badge>
                     </td>
                     <td className="py-3.5 px-4">
-                      <Button size="sm" variant="ghost" className="h-7 px-2 text-[11px]">
-                        <Info className="w-3.5 h-3.5 mr-1" />
+                      <Button size="sm" variant="ghost" className="h-7 px-2 text-[11px] font-bold">
+                        <Info className="w-3.5 h-3.5 mr-1 text-[#772f1a]" />
                         <span>View</span>
                       </Button>
                     </td>
@@ -339,13 +339,13 @@ export default function OrganizationPage() {
       >
         <form onSubmit={handleRegisterHousehold} className="space-y-4 text-xs">
           <div className="space-y-1.5">
-            <label className="text-slate-300 font-semibold uppercase tracking-wider">
+            <label className="text-[#772f1a] font-bold uppercase tracking-wider">
               Associate with Aid Pool
             </label>
             <select
               value={selectedCampaignId}
               onChange={(e) => setSelectedCampaignId(e.target.value)}
-              className="w-full h-11 rounded-xl border border-slate-700 bg-slate-950 px-3 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
+              className="w-full h-11 rounded-xl border border-[#eadecd] bg-white px-3 text-xs text-[#2b1712] focus:outline-none focus:border-[#f58549] font-medium"
             >
               {campaigns.map((c) => (
                 <option key={c.id} value={c.id}>
@@ -356,7 +356,7 @@ export default function OrganizationPage() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-slate-300 font-semibold uppercase tracking-wider">
+            <label className="text-[#772f1a] font-bold uppercase tracking-wider">
               Head of Household Name
             </label>
             <Input
@@ -370,7 +370,7 @@ export default function OrganizationPage() {
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <label className="text-slate-300 font-semibold uppercase tracking-wider">
+              <label className="text-[#772f1a] font-bold uppercase tracking-wider">
                 Family Size
               </label>
               <Input
@@ -383,7 +383,7 @@ export default function OrganizationPage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-slate-300 font-semibold uppercase tracking-wider">
+              <label className="text-[#772f1a] font-bold uppercase tracking-wider">
                 Entitlement Amount (PKR)
               </label>
               <Input
@@ -398,7 +398,7 @@ export default function OrganizationPage() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-slate-300 font-semibold uppercase tracking-wider">
+            <label className="text-[#772f1a] font-bold uppercase tracking-wider">
               Location / Union Council (Dadu)
             </label>
             <Input
@@ -411,7 +411,7 @@ export default function OrganizationPage() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-slate-300 font-semibold uppercase tracking-wider">
+            <label className="text-[#772f1a] font-bold uppercase tracking-wider">
               Field Assessment Notes
             </label>
             <Input
@@ -423,12 +423,12 @@ export default function OrganizationPage() {
             />
           </div>
 
-          <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-[11px] text-slate-400 space-y-1">
-            <span className="text-emerald-400 font-semibold flex items-center gap-1">
-              <ShieldCheck className="w-3.5 h-3.5" />
+          <div className="p-3.5 rounded-xl bg-[#f5f4ed] border border-[#d4d0b6] text-[11px] text-[#585123] space-y-1">
+            <span className="text-[#585123] font-bold flex items-center gap-1">
+              <ShieldCheck className="w-4 h-4 text-[#585123]" />
               Privacy Assurance
             </span>
-            <p>
+            <p className="text-[#6e5c54]">
               This record generates a unique internal ID (e.g. AMN-48294). No personal names or phone numbers are stored on public blockchain layers.
             </p>
           </div>

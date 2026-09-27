@@ -150,12 +150,12 @@ export default function DaduAidMap({
           className: "custom-pin",
           html: `
             <div class="relative flex items-center justify-center">
-              <div class="w-8 h-8 rounded-full bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center marker-radar-emerald cursor-pointer shadow-lg shadow-emerald-500/30">
-                <svg class="w-4 h-4 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              <div class="w-8 h-8 rounded-full bg-[#f58549]/20 border-2 border-[#f58549] flex items-center justify-center marker-radar-terracotta cursor-pointer shadow-md shadow-[#f58549]/30">
+                <svg class="w-4 h-4 text-[#772f1a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                 </svg>
               </div>
-              <div class="absolute -bottom-6 whitespace-nowrap bg-slate-950/90 border border-slate-800 text-[10px] font-bold text-slate-200 px-1.5 py-0.5 rounded shadow pointer-events-none">
+              <div class="absolute -bottom-6 whitespace-nowrap bg-white border border-[#eadecd] text-[10px] font-bold text-[#772f1a] px-1.5 py-0.5 rounded shadow-xs pointer-events-none">
                 ${store.name.split(" ")[0]}
               </div>
             </div>
@@ -189,7 +189,7 @@ export default function DaduAidMap({
   const totalHouseholds = DADU_MERCHANT_STORES.reduce((sum, s) => sum + s.householdsServed, 0);
 
   return (
-    <div className="relative w-full rounded-2xl overflow-hidden border border-slate-800 bg-slate-950 shadow-2xl" style={{ height }}>
+    <div className="relative w-full rounded-2xl overflow-hidden border border-[#eadecd] bg-white shadow-md" style={{ height }}>
       {/* Floating Stats & Filters */}
       <MapStatsHud
         activeStoreCount={DADU_MERCHANT_STORES.length}
@@ -213,10 +213,10 @@ export default function DaduAidMap({
       <div className="absolute bottom-4 left-4 z-[500] flex items-center gap-2">
         <button
           onClick={handleResetView}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-950/90 hover:bg-slate-900 border border-slate-800 text-xs font-semibold text-slate-300 hover:text-white shadow-xl backdrop-blur transition-all"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-[#f5f0e8] border border-[#eadecd] text-xs font-bold text-[#772f1a] shadow-md transition-all"
           title="Reset Map to Dadu Center"
         >
-          <LocateFixed className="w-3.5 h-3.5 text-emerald-400" />
+          <LocateFixed className="w-3.5 h-3.5 text-[#f58549]" />
           <span>Reset Center (Dadu Hub)</span>
         </button>
       </div>

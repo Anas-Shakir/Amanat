@@ -36,24 +36,24 @@ export function MapInspectorCard({
 
   if (selectedStore) {
     return (
-      <div className="absolute top-4 right-4 z-[500] w-full max-w-sm bg-slate-950/95 backdrop-blur-xl border border-slate-800 p-5 rounded-2xl shadow-2xl space-y-4 animate-in fade-in slide-in-from-right-4 duration-200">
+      <div className="absolute top-4 right-4 z-[500] w-full max-w-sm bg-white border border-[#eadecd] p-5 rounded-2xl shadow-xl space-y-4 animate-in fade-in slide-in-from-right-4 duration-200">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+            <div className="w-10 h-10 rounded-xl bg-[#772f1a] flex items-center justify-center text-white shadow-xs">
               <Store className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-[11px] font-mono text-emerald-400 uppercase tracking-wider font-semibold">
+              <div className="text-[11px] font-mono text-[#585123] uppercase tracking-wider font-bold">
                 {selectedStore.merchantCode}
               </div>
-              <h3 className="text-sm font-bold text-white leading-tight">
+              <h3 className="text-sm font-bold text-[#772f1a] leading-tight">
                 {selectedStore.name}
               </h3>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors"
+            className="text-[#6e5c54] hover:text-[#772f1a] p-1 rounded-lg hover:bg-[#f5f0e8] transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -62,40 +62,40 @@ export function MapInspectorCard({
         {/* Status badges */}
         <div className="flex flex-wrap items-center gap-1.5">
           <Badge variant="verified" className="text-[10px]">
-            <CheckCircle2 className="w-3 h-3 mr-1" /> Verified Partner Store
+            <CheckCircle2 className="w-3 h-3 mr-1 text-[#585123]" /> Verified Partner Store
           </Badge>
-          <Badge variant="outline" className="text-[10px] border-emerald-500/30 text-emerald-300">
+          <Badge variant="outline" className="text-[10px]">
             Stock: {selectedStore.inventoryStatus}
           </Badge>
-          <Badge variant="outline" className="text-[10px] border-slate-700 text-slate-300">
+          <Badge variant="default" className="text-[10px]">
             {selectedStore.tehsil}
           </Badge>
         </div>
 
         {/* Location & Contact Info */}
-        <div className="bg-slate-900/80 p-3 rounded-xl border border-slate-800/80 space-y-2 text-xs">
-          <div className="flex items-start gap-2 text-slate-300">
-            <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
-            <span className="leading-snug">{selectedStore.area}</span>
+        <div className="bg-[#fbf9f6] p-3 rounded-xl border border-[#eadecd] space-y-2 text-xs">
+          <div className="flex items-start gap-2 text-[#2b1712]">
+            <MapPin className="w-3.5 h-3.5 text-[#585123] shrink-0 mt-0.5" />
+            <span className="leading-snug font-medium">{selectedStore.area}</span>
           </div>
-          <div className="flex items-center gap-2 text-slate-300">
-            <Phone className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-            <span className="font-mono">{selectedStore.phone}</span>
-            <span className="text-slate-500 text-[10px]">({selectedStore.ownerName})</span>
+          <div className="flex items-center gap-2 text-[#2b1712]">
+            <Phone className="w-3.5 h-3.5 text-[#585123] shrink-0" />
+            <span className="font-mono font-bold">{selectedStore.phone}</span>
+            <span className="text-[#6e5c54] text-[10px]">({selectedStore.ownerName})</span>
           </div>
         </div>
 
         {/* Fulfilled Metrics */}
         <div className="grid grid-cols-2 gap-2 text-xs">
-          <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800">
-            <span className="text-slate-400 text-[11px]">Aid Fulfilled</span>
-            <div className="text-base font-bold text-emerald-400 mt-0.5">
+          <div className="p-3 rounded-xl bg-[#fbf9f6] border border-[#eadecd]">
+            <span className="text-[#6e5c54] text-[11px] font-bold">Aid Fulfilled</span>
+            <div className="text-base font-black text-[#585123] mt-0.5">
               {formatCurrencyPKR(selectedStore.totalFulfilledPKR)}
             </div>
           </div>
-          <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800">
-            <span className="text-slate-400 text-[11px]">Households</span>
-            <div className="text-base font-bold text-white mt-0.5">
+          <div className="p-3 rounded-xl bg-[#fbf9f6] border border-[#eadecd]">
+            <span className="text-[#6e5c54] text-[11px] font-bold">Households</span>
+            <div className="text-base font-black text-[#772f1a] mt-0.5">
               {selectedStore.householdsServed} families
             </div>
           </div>
@@ -103,15 +103,15 @@ export function MapInspectorCard({
 
         {/* Supported Rations */}
         <div className="space-y-1.5 text-xs">
-          <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-            <Package className="w-3 h-3 text-cyan-400" />
+          <div className="text-[11px] font-bold text-[#6e5c54] uppercase tracking-wider flex items-center gap-1">
+            <Package className="w-3 h-3 text-[#f58549]" />
             <span>Authorized Essential Inventory</span>
           </div>
           <div className="flex flex-wrap gap-1">
             {selectedStore.supportedRations.map((item, idx) => (
               <span
                 key={idx}
-                className="px-2 py-0.5 rounded-md bg-slate-900 border border-slate-800 text-[11px] text-slate-300"
+                className="px-2 py-0.5 rounded-md bg-[#f5f0e8] border border-[#eadecd] text-[11px] text-[#772f1a] font-medium"
               >
                 {item}
               </span>
@@ -122,7 +122,7 @@ export function MapInspectorCard({
         {/* Action Shortcut Buttons */}
         <div className="pt-1 flex gap-2">
           <Link href="/merchant" className="flex-1">
-            <Button size="sm" variant="primary" className="w-full text-xs bg-emerald-600 hover:bg-emerald-500">
+            <Button size="sm" variant="primary" className="w-full text-xs">
               <span>Open Merchant POS</span>
               <ArrowRight className="w-3 h-3 ml-1" />
             </Button>
@@ -140,13 +140,13 @@ export function MapInspectorCard({
 
   if (selectedZone) {
     return (
-      <div className="absolute top-4 right-4 z-[500] w-full max-w-sm bg-slate-950/95 backdrop-blur-xl border border-slate-800 p-5 rounded-2xl shadow-2xl space-y-4 animate-in fade-in slide-in-from-right-4 duration-200">
+      <div className="absolute top-4 right-4 z-[500] w-full max-w-sm bg-white border border-[#eadecd] p-5 rounded-2xl shadow-xl space-y-4 animate-in fade-in slide-in-from-right-4 duration-200">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2">
             <div 
-              className="w-9 h-9 rounded-xl flex items-center justify-center border"
+              className="w-10 h-10 rounded-xl flex items-center justify-center border shadow-xs"
               style={{
-                backgroundColor: `${selectedZone.color}20`,
+                backgroundColor: `${selectedZone.color}15`,
                 borderColor: selectedZone.color,
                 color: selectedZone.color,
               }}
@@ -154,17 +154,17 @@ export function MapInspectorCard({
               <Layers className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-[11px] font-mono uppercase tracking-wider font-semibold" style={{ color: selectedZone.color }}>
+              <div className="text-[11px] font-mono uppercase tracking-wider font-bold" style={{ color: selectedZone.color }}>
                 {selectedZone.type.replace("_", " ")}
               </div>
-              <h3 className="text-sm font-bold text-white leading-tight">
+              <h3 className="text-sm font-bold text-[#772f1a] leading-tight">
                 {selectedZone.name}
               </h3>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors"
+            className="text-[#6e5c54] hover:text-[#772f1a] p-1 rounded-lg hover:bg-[#f5f0e8] transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -179,40 +179,40 @@ export function MapInspectorCard({
           >
             <Flame className="w-3 h-3 mr-1" /> Risk: {selectedZone.riskLevel}
           </Badge>
-          <Badge variant="outline" className="text-[10px] border-slate-700 text-slate-300">
+          <Badge variant="default" className="text-[10px]">
             Tehsil: {selectedZone.tehsil}
           </Badge>
         </div>
 
         {/* Description */}
-        <p className="text-xs text-slate-300 leading-relaxed bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+        <p className="text-xs text-[#6e5c54] leading-relaxed bg-[#fbf9f6] p-3 rounded-xl border border-[#eadecd] font-medium">
           {selectedZone.description}
         </p>
 
         {/* Zone Statistics */}
         <div className="grid grid-cols-2 gap-2 text-xs">
-          <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800">
-            <span className="text-slate-400 text-[11px]">Funded Pool</span>
-            <div className="text-base font-bold text-white mt-0.5">
+          <div className="p-3 rounded-xl bg-[#fbf9f6] border border-[#eadecd]">
+            <span className="text-[#6e5c54] text-[11px] font-bold">Funded Pool</span>
+            <div className="text-base font-black text-[#772f1a] mt-0.5">
               {formatCurrencyPKR(selectedZone.activePoolAmount)}
             </div>
           </div>
-          <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800">
-            <span className="text-slate-400 text-[11px]">Fulfilled</span>
-            <div className="text-base font-bold text-emerald-400 mt-0.5">
+          <div className="p-3 rounded-xl bg-[#fbf9f6] border border-[#eadecd]">
+            <span className="text-[#6e5c54] text-[11px] font-bold">Fulfilled</span>
+            <div className="text-base font-black text-[#585123] mt-0.5">
               {formatCurrencyPKR(selectedZone.fulfilledAmount)}
             </div>
           </div>
         </div>
 
-        <div className="flex items-center justify-between text-xs px-1 text-slate-400">
-          <span>Verified Target Families:</span>
-          <span className="font-bold text-white">{selectedZone.verifiedHouseholds} Households</span>
+        <div className="flex items-center justify-between text-xs px-1 text-[#6e5c54]">
+          <span className="font-semibold">Verified Target Families:</span>
+          <span className="font-bold text-[#772f1a]">{selectedZone.verifiedHouseholds} Households</span>
         </div>
 
         <div className="pt-1">
           <Link href="/organization" className="w-full">
-            <Button size="sm" variant="primary" className="w-full text-xs bg-indigo-600 hover:bg-indigo-500">
+            <Button size="sm" variant="secondary" className="w-full text-xs">
               <Users className="w-3.5 h-3.5 mr-1.5" />
               <span>Manage Households in this Zone</span>
             </Button>

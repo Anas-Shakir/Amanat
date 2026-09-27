@@ -164,20 +164,20 @@ export default function MerchantPage() {
   return (
     <div className="max-w-md mx-auto px-4 py-6 w-full space-y-6">
       {/* Merchant Header / Node Identifier */}
-      <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex items-center justify-between shadow-lg">
+      <div className="bg-white border border-[#eadecd] rounded-2xl p-4 flex items-center justify-between shadow-xs">
         <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-2xl bg-cyan-950 border border-cyan-700/50 flex items-center justify-center text-cyan-400">
+          <div className="w-12 h-12 rounded-2xl bg-[#772f1a] flex items-center justify-center text-white shadow-xs">
             <Store className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-[10px] uppercase font-bold tracking-widest text-slate-400">
+            <div className="text-[10px] uppercase font-bold tracking-widest text-[#6e5c54]">
               Merchant Node #MER-02
             </div>
-            <div className="text-base font-bold text-white leading-tight">
+            <div className="text-base font-bold text-[#772f1a] leading-tight">
               Madina Kiryana Store
             </div>
-            <div className="text-xs text-emerald-400 font-medium flex items-center gap-1 mt-0.5">
-              <MapPin className="w-3 h-3" />
+            <div className="text-xs text-[#585123] font-bold flex items-center gap-1 mt-0.5">
+              <MapPin className="w-3.5 h-3.5" />
               <span>Johi Main Bazaar, Dadu • Authorized</span>
             </div>
           </div>
@@ -186,21 +186,21 @@ export default function MerchantPage() {
 
       {/* STEP 1: Tactile Voucher Entry Keypad */}
       {step === "ENTER" && (
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-6 shadow-2xl">
+        <div className="bg-white border border-[#eadecd] rounded-3xl p-6 space-y-6 shadow-xl">
           <div className="text-center space-y-1">
-            <h2 className="text-2xl font-black text-white">Enter Voucher PIN</h2>
-            <p className="text-xs text-slate-400">
+            <h2 className="text-2xl font-black text-[#772f1a]">Enter Voucher PIN</h2>
+            <p className="text-xs text-[#6e5c54]">
               Ask beneficiary for their 4-digit SMS / WhatsApp code.
             </p>
           </div>
 
           {/* Display Screen */}
-          <div className="bg-slate-950 rounded-2xl border-2 border-slate-700 p-4 text-center">
-            <div className="text-4xl font-mono font-black text-white tracking-[0.3em] min-h-[48px] flex items-center justify-center">
-              {voucherCode ? voucherCode : <span className="text-slate-600">_ _ _ _</span>}
+          <div className="bg-[#fbf9f6] rounded-2xl border-2 border-[#f2a65a] p-4 text-center">
+            <div className="text-4xl font-mono font-black text-[#772f1a] tracking-[0.3em] min-h-[48px] flex items-center justify-center">
+              {voucherCode ? voucherCode : <span className="text-[#a8978c]">_ _ _ _</span>}
             </div>
             {errorMessage && (
-              <div className="text-xs text-rose-400 font-medium mt-2 flex items-center justify-center gap-1">
+              <div className="text-xs text-[#943b22] font-bold mt-2 flex items-center justify-center gap-1">
                 <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
                 <span>{errorMessage}</span>
               </div>
@@ -214,7 +214,7 @@ export default function MerchantPage() {
                 key={digit}
                 type="button"
                 onClick={() => handleKeypadPress(digit)}
-                className="h-14 rounded-2xl bg-slate-800/80 hover:bg-slate-700 active:bg-slate-600 border border-slate-700/80 text-white font-bold text-2xl transition-all select-none shadow-sm"
+                className="h-14 rounded-2xl bg-[#f5f0e8] hover:bg-[#fae4cb] active:bg-[#f2a65a] border border-[#eadecd] text-[#772f1a] font-extrabold text-2xl transition-all select-none shadow-2xs cursor-pointer"
               >
                 {digit}
               </button>
@@ -222,14 +222,14 @@ export default function MerchantPage() {
             <button
               type="button"
               onClick={handleKeypadBackspace}
-              className="h-14 rounded-2xl bg-slate-800/80 hover:bg-slate-700 active:bg-slate-600 border border-slate-700/80 text-slate-300 font-semibold text-sm transition-all select-none"
+              className="h-14 rounded-2xl bg-[#f5f0e8] hover:bg-[#fae4cb] active:bg-[#f2a65a] border border-[#eadecd] text-[#6e5c54] font-bold text-sm transition-all select-none cursor-pointer"
             >
               DEL
             </button>
             <button
               type="button"
               onClick={() => handleKeypadPress("0")}
-              className="h-14 rounded-2xl bg-slate-800/80 hover:bg-slate-700 active:bg-slate-600 border border-slate-700/80 text-white font-bold text-2xl transition-all select-none"
+              className="h-14 rounded-2xl bg-[#f5f0e8] hover:bg-[#fae4cb] active:bg-[#f2a65a] border border-[#eadecd] text-[#772f1a] font-extrabold text-2xl transition-all select-none shadow-2xs cursor-pointer"
             >
               0
             </button>
@@ -239,7 +239,7 @@ export default function MerchantPage() {
                 setVoucherCode("4827");
                 handleVerify("4827");
               }}
-              className="h-14 rounded-2xl bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-600/50 text-emerald-300 font-bold text-xs transition-all select-none flex items-center justify-center text-center leading-tight"
+              className="h-14 rounded-2xl bg-[#585123] hover:bg-[#736b32] text-white font-bold text-xs transition-all select-none flex items-center justify-center text-center leading-tight shadow-xs cursor-pointer"
             >
               Demo (4827)
             </button>
@@ -249,7 +249,7 @@ export default function MerchantPage() {
           <Button
             variant="merchant"
             size="xl"
-            className="w-full"
+            className="w-full shadow-md"
             disabled={voucherCode.length < 3 || isLoading}
             onClick={() => handleVerify()}
           >
@@ -260,15 +260,15 @@ export default function MerchantPage() {
 
       {/* STEP 2: Entitlement Verified & Amount Selection */}
       {step === "VERIFIED" && verifiedData && (
-        <div className="bg-slate-900 border-2 border-emerald-500/50 rounded-3xl p-6 space-y-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+        <div className="bg-white border-2 border-[#585123] rounded-3xl p-6 space-y-6 shadow-xl animate-in fade-in zoom-in-95 duration-200">
           <div className="flex items-center justify-between">
             <Badge variant="verified" className="text-xs py-1 px-3">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <CheckCircle2 className="w-4 h-4 text-[#585123]" />
               <span>VALID CODE #{verifiedData.code}</span>
             </Badge>
             <button
               onClick={handleReset}
-              className="text-xs text-slate-400 hover:text-white flex items-center gap-1"
+              className="text-xs text-[#6e5c54] hover:text-[#772f1a] font-bold flex items-center gap-1"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Back</span>
@@ -276,34 +276,34 @@ export default function MerchantPage() {
           </div>
 
           {/* Household summary */}
-          <div className="bg-slate-950 rounded-2xl border border-slate-800 p-4 space-y-3 text-xs">
-            <div className="flex justify-between text-slate-400">
+          <div className="bg-[#fbf9f6] rounded-2xl border border-[#eadecd] p-4 space-y-3 text-xs">
+            <div className="flex justify-between text-[#6e5c54]">
               <span>Household Reference:</span>
-              <span className="font-mono font-bold text-white text-sm">
+              <span className="font-mono font-bold text-[#772f1a] text-sm">
                 {verifiedData.householdId}
               </span>
             </div>
-            <div className="flex justify-between text-slate-400">
+            <div className="flex justify-between text-[#6e5c54]">
               <span>Campaign Pool:</span>
-              <span className="text-slate-200 truncate max-w-[180px]">
+              <span className="text-[#2b1712] font-semibold truncate max-w-[180px]">
                 {verifiedData.campaignTitle}
               </span>
             </div>
-            <div className="flex justify-between text-slate-400">
+            <div className="flex justify-between text-[#6e5c54]">
               <span>Original Entitlement:</span>
-              <span className="text-slate-300 font-medium">
+              <span className="text-[#772f1a] font-bold">
                 {formatCurrencyPKR(verifiedData.totalEntitlement)}
               </span>
             </div>
-            <div className="flex justify-between text-slate-400">
+            <div className="flex justify-between text-[#6e5c54]">
               <span>Already Handed Over:</span>
-              <span className="text-slate-300">
+              <span className="text-[#6e5c54] font-medium">
                 {formatCurrencyPKR(verifiedData.alreadyRedeemed)}
               </span>
             </div>
-            <div className="pt-2 border-t border-slate-800 flex justify-between items-center">
-              <span className="text-xs font-bold text-slate-200">Available Balance:</span>
-              <span className="text-2xl font-black text-emerald-400">
+            <div className="pt-2 border-t border-[#eadecd] flex justify-between items-center">
+              <span className="text-xs font-bold text-[#2b1712]">Available Balance:</span>
+              <span className="text-2xl font-black text-[#585123]">
                 {formatCurrencyPKR(verifiedData.remainingAmount)}
               </span>
             </div>
@@ -311,12 +311,12 @@ export default function MerchantPage() {
 
           {/* Handover Amount Selection */}
           <div className="space-y-3">
-            <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">
+            <label className="block text-xs font-bold text-[#772f1a] uppercase tracking-wider">
               Goods Amount to Hand Over:
             </label>
 
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-black text-xl">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#772f1a] font-black text-xl">
                 Rs.
               </span>
               <input
@@ -324,7 +324,7 @@ export default function MerchantPage() {
                 max={verifiedData.remainingAmount}
                 value={fulfillAmount}
                 onChange={(e) => setFulfillAmount(e.target.value)}
-                className="w-full text-left pl-14 pr-4 py-4 rounded-2xl bg-slate-950 border-2 border-emerald-500/50 text-white font-black text-2xl focus:outline-none focus:border-emerald-400 shadow-inner"
+                className="w-full text-left pl-14 pr-4 py-4 rounded-2xl bg-white border-2 border-[#f58549] text-[#772f1a] font-black text-2xl focus:outline-none focus:ring-2 focus:ring-[#f58549]/20 shadow-2xs"
               />
             </div>
 
@@ -342,8 +342,8 @@ export default function MerchantPage() {
                   onClick={() => setFulfillAmount(btn.val)}
                   className={`py-2 text-xs font-bold rounded-xl border transition-all ${
                     fulfillAmount === btn.val
-                      ? "bg-emerald-600 text-white border-emerald-500"
-                      : "bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700"
+                      ? "bg-[#f58549] text-white border-[#f58549]"
+                      : "bg-[#f5f0e8] text-[#772f1a] border-[#eadecd] hover:border-[#f2a65a]"
                   }`}
                 >
                   {btn.label}
@@ -352,7 +352,7 @@ export default function MerchantPage() {
             </div>
 
             {errorMessage && (
-              <div className="text-xs text-rose-400 font-medium flex items-center gap-1">
+              <div className="text-xs text-[#943b22] font-bold flex items-center gap-1">
                 <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
                 <span>{errorMessage}</span>
               </div>
@@ -363,7 +363,7 @@ export default function MerchantPage() {
           <Button
             variant="merchant"
             size="xl"
-            className="w-full"
+            className="w-full shadow-md"
             disabled={isLoading || Number(fulfillAmount) <= 0 || Number(fulfillAmount) > verifiedData.remainingAmount}
             onClick={handleConfirmFulfillment}
           >
@@ -374,8 +374,8 @@ export default function MerchantPage() {
 
       {/* STEP 3: Handover Receipt & Settlement Telemetry */}
       {step === "CONFIRMED" && redemptionReceipt && (
-        <div className="bg-slate-900 border-2 border-emerald-500/60 rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl text-center animate-in fade-in zoom-in-95 duration-200">
-          <div className="w-16 h-16 rounded-full bg-emerald-950 border-2 border-emerald-400 flex items-center justify-center text-emerald-400 mx-auto shadow-lg shadow-emerald-900/50">
+        <div className="bg-white border-2 border-[#585123] rounded-3xl p-6 sm:p-8 space-y-6 shadow-xl text-center animate-in fade-in zoom-in-95 duration-200">
+          <div className="w-16 h-16 rounded-full bg-[#f5f4ed] border-2 border-[#585123] flex items-center justify-center text-[#585123] mx-auto shadow-xs">
             <CheckCircle2 className="w-9 h-9" />
           </div>
 
@@ -385,33 +385,33 @@ export default function MerchantPage() {
             ) : (
               <Badge variant="verified">HANDOVER CONFIRMED</Badge>
             )}
-            <h2 className="text-2xl font-black text-white pt-1">
+            <h2 className="text-2xl font-black text-[#772f1a] pt-1">
               {formatCurrencyPKR(redemptionReceipt.fulfilledAmount)} Fulfilled
             </h2>
-            <p className="text-xs text-slate-400">
-              Household reference: <strong className="text-white">{redemptionReceipt.householdId}</strong>
+            <p className="text-xs text-[#6e5c54]">
+              Household reference: <strong className="text-[#772f1a] font-bold">{redemptionReceipt.householdId}</strong>
             </p>
           </div>
 
           {/* Receipt Details */}
-          <div className="bg-slate-950 rounded-2xl border border-slate-800 p-4 text-left space-y-2.5 text-xs">
+          <div className="bg-[#fbf9f6] rounded-2xl border border-[#eadecd] p-4 text-left space-y-2.5 text-xs">
             <div className="flex justify-between">
-              <span className="text-slate-400">Receipt Number:</span>
-              <span className="font-mono text-slate-200 font-bold">{redemptionReceipt.id}</span>
+              <span className="text-[#6e5c54]">Receipt Number:</span>
+              <span className="font-mono text-[#772f1a] font-bold">{redemptionReceipt.id}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-400">Remaining Household Balance:</span>
-              <span className="text-emerald-400 font-bold">
+              <span className="text-[#6e5c54]">Remaining Household Balance:</span>
+              <span className="text-[#585123] font-black">
                 {formatCurrencyPKR(redemptionReceipt.remainingBalance)}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-400">Merchant Payout:</span>
-              <span className="text-cyan-400 font-bold">Relayer Subsidized (Gasless)</span>
+              <span className="text-[#6e5c54]">Merchant Payout:</span>
+              <span className="text-[#585123] font-bold">Relayer Subsidized (Gasless)</span>
             </div>
-            <div className="flex justify-between items-center pt-2 border-t border-slate-800/80">
-              <span className="text-slate-400">Base Sepolia Tx Proof:</span>
-              <span className="text-[11px] font-mono text-cyan-400 truncate max-w-[140px]">
+            <div className="flex justify-between items-center pt-2 border-t border-[#eadecd]">
+              <span className="text-[#6e5c54]">Base Sepolia Tx Proof:</span>
+              <span className="text-[11px] font-mono text-[#772f1a] font-bold truncate max-w-[140px]">
                 {redemptionReceipt.isOfflineQueued ? "Queued for Auto-Sync" : redemptionReceipt.blockchainTxHash}
               </span>
             </div>
