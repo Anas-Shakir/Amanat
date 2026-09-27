@@ -12,12 +12,15 @@ import {
   Sparkles, 
   Globe, 
   ExternalLink,
-  QrCode
+  Send,
+  Radio,
+  Clock
 } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { formatCurrencyPKR } from "@/lib/utils";
 
 interface BeneficiaryOption {
@@ -33,7 +36,11 @@ interface BeneficiaryOption {
 export default function VoucherDemoPage() {
   const [copied, setCopied] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState<"EN" | "UR">("EN");
-  const [showQr, setShowQr] = useState(false);
+  const [testPhone, setTestPhone] = useState("+92 300 1234567");
+  const [selectedChannel, setSelectedChannel] = useState<"SMS" | "WHATSAPP">("SMS");
+  const [isSending, setIsSending] = useState(false);
+  const [dispatchSuccess, setDispatchSuccess] = useState(false);
+  const [recentDispatches, setRecentDispatches] = useState<any[]>([]);
 
   const [households, setHouseholds] = useState<BeneficiaryOption[]>([
     {
@@ -68,12 +75,17 @@ export default function VoucherDemoPage() {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
-    async function loadHouseholds() {
+    async function loadData() {
       try {
-        const res = await fetch("/api/households");
-        const data = await res.json();
-        if (data.success && data.households && data.households.length > 0) {
-          const mapped = data.households.map((h: any) => ({
+        const [hhRes, histRes] = await Promise.all([
+          fetch("/api/households"),
+          fetch("/api/notifications/history"),
+        ]);
+        const hhData = await hhRes.json();
+        const histData = await histRes.json();
+
+        if (hhData.success && hhData.households && hhData.households.length > 0) {
+          const mapped = hhData.households.map((h: any) => ({
             householdId: h.householdId,
             headOfFamily: h.headOfFamily,
             voucherCode: h.lastVoucherCode || "4827",
@@ -84,11 +96,15 @@ export default function VoucherDemoPage() {
           }));
           setHouseholds(mapped);
         }
+
+        if (histData.success && histData.history) {
+          setRecentDispatches(histData.history);
+        }
       } catch (err) {
-        console.error("Failed to load households:", err);
+        console.error("Failed to load voucher data:", err);
       }
     }
-    loadHouseholds();
+    loadData();
   }, []);
 
   const activeHH = households[selectedIndex] || households[0];
@@ -97,6 +113,36 @@ export default function VoucherDemoPage() {
     navigator.clipboard.writeText(activeHH.voucherCode);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleSendDispatch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSending(true);
+
+    try {
+      const res = await fetch("/api/notifications/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          householdCode: activeHH.householdId,
+          voucherCode: activeHH.voucherCode,
+          amount: activeHH.amount,
+          phone: testPhone,
+          channel: selectedChannel,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success && data.dispatch) {
+        setDispatchSuccess(true);
+        setRecentDispatches([data.dispatch, ...recentDispatches]);
+        setTimeout(() => setDispatchSuccess(false), 3000);
+      }
+    } catch (err) {
+      console.error("Dispatch failure:", err);
+    } finally {
+      setIsSending(false);
+    }
   };
 
   const nearbyStores = [
@@ -115,25 +161,25 @@ export default function VoucherDemoPage() {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 w-full space-y-8">
+    <div className="max-w-5xl mx-auto px-4 py-8 w-full space-y-8">
       {/* Header */}
       <div className="text-center space-y-2">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-500/30 text-xs font-semibold text-emerald-300">
           <Smartphone className="w-3.5 h-3.5" />
-          <span>Beneficiary Experience (Zero Crypto / No App Required)</span>
+          <span>Beneficiary Messaging Engine (Zero Crypto / No App Required)</span>
         </div>
         <h1 className="text-3xl font-extrabold text-white tracking-tight">
-          Simulated Beneficiary Message Dispatch
+          Beneficiary Voucher Notification Hub
         </h1>
         <p className="text-slate-400 text-sm max-w-xl mx-auto">
-          Beneficiaries receive a dignified SMS or WhatsApp message with their 4-digit voucher PIN. Assistance is redeemed privately at local Dadu kiryana stores.
+          Dignified, dual-language SMS & WhatsApp notifications delivered directly to household heads in Dadu without requiring internet or wallet setup.
         </p>
       </div>
 
       {/* Household Selector Tabs */}
       <div className="space-y-2">
         <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block text-center">
-          Select Beneficiary Household:
+          Select Target Household Record:
         </label>
         <div className="flex flex-wrap items-center justify-center gap-2">
           {households.map((hh, idx) => (
@@ -274,47 +320,110 @@ export default function VoucherDemoPage() {
           </div>
         </div>
 
-        {/* Right: Dignity & Nearby Store Directory */}
+        {/* Right: Live Dispatch Trigger & History */}
         <div className="md:col-span-5 space-y-4">
-          {/* Dignity Pillar Card */}
-          <Card className="p-5 space-y-3 border-emerald-500/30 bg-emerald-950/20">
-            <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs">
-              <ShieldCheck className="w-4 h-4" />
-              <span>Dignity-First Assistance</span>
-            </div>
-            <p className="text-xs text-slate-300 leading-relaxed">
-              No humiliating public aid lines or visible donor banners. Beneficiaries shop normally at neighborhood kiryana stores using confidential PIN codes.
-            </p>
+          {/* Dispatch Trigger Card */}
+          <Card className="p-5 space-y-4">
+            <CardHeader className="p-0 border-none space-y-1">
+              <CardTitle className="text-sm font-bold flex items-center gap-1.5">
+                <Send className="w-4 h-4 text-cyan-400" />
+                <span>Trigger Voucher Notification</span>
+              </CardTitle>
+              <p className="text-[11px] text-slate-400">
+                Simulate or broadcast live SMS / WhatsApp dispatch for {activeHH.householdId}.
+              </p>
+            </CardHeader>
+
+            <form onSubmit={handleSendDispatch} className="space-y-3 text-xs">
+              <div className="space-y-1">
+                <label className="text-slate-300 font-semibold">Recipient Phone Number</label>
+                <Input
+                  type="text"
+                  value={testPhone}
+                  onChange={(e) => setTestPhone(e.target.value)}
+                  placeholder="+92 300 1234567"
+                  required
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-slate-300 font-semibold">Dispatch Channel</label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedChannel("SMS")}
+                    className={`py-2 px-3 rounded-xl border text-xs font-semibold transition-all ${
+                      selectedChannel === "SMS"
+                        ? "bg-cyan-950 text-cyan-300 border-cyan-500/50"
+                        : "bg-slate-950 text-slate-400 border-slate-800"
+                    }`}
+                  >
+                    SMS Gateway
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedChannel("WHATSAPP")}
+                    className={`py-2 px-3 rounded-xl border text-xs font-semibold transition-all ${
+                      selectedChannel === "WHATSAPP"
+                        ? "bg-emerald-950 text-emerald-300 border-emerald-500/50"
+                        : "bg-slate-950 text-slate-400 border-slate-800"
+                    }`}
+                  >
+                    WhatsApp API
+                  </button>
+                </div>
+              </div>
+
+              {dispatchSuccess && (
+                <div className="p-2.5 rounded-xl bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-[11px] flex items-center gap-1.5">
+                  <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Voucher PIN {activeHH.voucherCode} dispatched!</span>
+                </div>
+              )}
+
+              <Button
+                type="submit"
+                variant="primary"
+                className="w-full text-xs"
+                disabled={isSending}
+              >
+                <Send className="w-3.5 h-3.5" />
+                <span>{isSending ? "Dispatching..." : `Send ${selectedChannel} to Beneficiary`}</span>
+              </Button>
+            </form>
           </Card>
 
-          {/* Nearby Authorized Stores */}
+          {/* Recent Dispatch Stream */}
           <Card className="p-5 space-y-3">
             <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Participating Stores in Dadu</span>
+              <Radio className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
+              <span>Recent Dispatches ({recentDispatches.length})</span>
             </h3>
 
-            <div className="space-y-2 text-xs">
-              {nearbyStores.map((st, i) => (
-                <div
-                  key={i}
-                  className="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-white">{st.name}</span>
-                    <Badge variant="verified" className="text-[10px] py-0 px-1.5">
-                      Active
-                    </Badge>
-                  </div>
-                  <div className="text-[11px] text-slate-400 flex items-center gap-1">
-                    <MapPin className="w-3 h-3 text-slate-500" />
-                    <span>{st.area}</span>
-                  </div>
-                  <div className="text-[10px] text-cyan-400 font-medium">
-                    Owner: {st.owner} • {st.distance} away
-                  </div>
+            <div className="space-y-2 text-xs max-h-48 overflow-y-auto">
+              {recentDispatches.length === 0 ? (
+                <div className="text-[11px] text-slate-500 italic py-2">
+                  No notifications triggered yet. Send one above!
                 </div>
-              ))}
+              ) : (
+                recentDispatches.slice(0, 4).map((d, i) => (
+                  <div
+                    key={d.id || i}
+                    className="p-2.5 rounded-xl bg-slate-950 border border-slate-800 space-y-1"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-mono font-bold text-indigo-400">{d.householdCode}</span>
+                      <Badge variant={d.status === "DELIVERED" ? "verified" : "default"} className="text-[9px] py-0">
+                        {d.status} ({d.provider})
+                      </Badge>
+                    </div>
+                    <div className="text-[11px] text-slate-400 flex items-center justify-between">
+                      <span>PIN: <strong className="text-amber-400 font-mono">{d.voucherCode}</strong></span>
+                      <span className="text-[10px] text-slate-500">{new Date(d.timestamp).toLocaleTimeString()}</span>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </Card>
         </div>

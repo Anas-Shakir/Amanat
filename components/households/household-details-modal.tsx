@@ -13,7 +13,8 @@ import {
   FileText,
   Copy,
   CheckCircle2,
-  ExternalLink
+  ExternalLink,
+  Send
 } from "lucide-react";
 import { useState } from "react";
 import { formatCurrencyPKR } from "@/lib/utils";
@@ -30,6 +31,8 @@ export function HouseholdDetailsModal({
   onClose,
 }: HouseholdDetailsModalProps) {
   const [copied, setCopied] = useState(false);
+  const [isSendingNotif, setIsSendingNotif] = useState(false);
+  const [notifSent, setNotifSent] = useState(false);
 
   if (!household) return null;
 
@@ -37,6 +40,29 @@ export function HouseholdDetailsModal({
     navigator.clipboard.writeText(household.lastVoucherCode || "4827");
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleSendNotification = async () => {
+    try {
+      setIsSendingNotif(true);
+      await fetch("/api/notifications/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          householdCode: household.householdId,
+          voucherCode: household.lastVoucherCode || "4827",
+          amount: household.remainingAmount || household.entitlementAmount || 4000,
+          phone: household.contactPhone || "+923001234567",
+          channel: "SMS",
+        }),
+      });
+      setNotifSent(true);
+      setTimeout(() => setNotifSent(false), 3000);
+    } catch (err) {
+      console.error("Failed to send notification", err);
+    } finally {
+      setIsSendingNotif(false);
+    }
   };
 
   const sampleRedemptions = [
@@ -119,15 +145,36 @@ export function HouseholdDetailsModal({
               </div>
             </div>
 
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={copyVoucherCode}
-              className="text-xs"
-            >
-              <Copy className="w-3.5 h-3.5" />
-              <span>{copied ? "Copied" : "Copy Code"}</span>
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={copyVoucherCode}
+                className="text-xs"
+              >
+                <Copy className="w-3.5 h-3.5" />
+                <span>{copied ? "Copied" : "Copy Code"}</span>
+              </Button>
+              <Button
+                size="sm"
+                variant="primary"
+                disabled={isSendingNotif}
+                onClick={handleSendNotification}
+                className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white"
+              >
+                {isSendingNotif ? (
+                  <span>Sending...</span>
+                ) : notifSent ? (
+                  <span className="flex items-center gap-1 text-emerald-200">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> Sent!
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1">
+                    <Send className="w-3.5 h-3.5" /> Send SMS/WA
+                  </span>
+                )}
+              </Button>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-2 text-xs pt-1">
