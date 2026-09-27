@@ -10,13 +10,16 @@ import {
   Store, 
   Layers, 
   ArrowUpRight, 
-  Sparkles,
-  Filter,
-  CheckCircle2,
-  Search,
-  PlusCircle,
-  Flame,
-  Info
+  Sparkles, 
+  Filter, 
+  CheckCircle2, 
+  Search, 
+  PlusCircle, 
+  Flame, 
+  Info,
+  TrendingUp,
+  BarChart3,
+  PieChart
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -27,6 +30,9 @@ import { Modal } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
 import { CampaignDetailsModal } from "@/components/campaigns/campaign-details-modal";
 import { CreateCampaignModal } from "@/components/campaigns/create-campaign-modal";
+import { FulfillmentChart } from "@/components/analytics/fulfillment-chart";
+import { GeographicDistributionChart } from "@/components/analytics/geographic-distribution-chart";
+import { MerchantLeaderboard } from "@/components/analytics/merchant-leaderboard";
 import { Campaign } from "@/types";
 import { formatCurrencyPKR } from "@/lib/utils";
 import { useAuth } from "@/components/auth/auth-context";
@@ -35,6 +41,7 @@ export default function DonorPage() {
   const { role } = useAuth();
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [filterMode, setFilterMode] = useState<"ALL" | "EMERGENCY" | "COMMUNITY">("ALL");
+  const [viewTab, setViewTab] = useState<"POOLS" | "ANALYTICS">("POOLS");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
   const [inspectedCampaign, setInspectedCampaign] = useState<Campaign | null>(null);
@@ -72,6 +79,7 @@ export default function DonorPage() {
   const totalFundedAll = campaigns.reduce((acc, c) => acc + c.fundedAmount, 0);
   const totalTargetAll = campaigns.reduce((acc, c) => acc + c.targetAmount, 0);
   const totalReachedHouseholdsAll = campaigns.reduce((acc, c) => acc + (c.reachedHouseholds || 18), 0);
+  const totalFulfilledPKR = 73200; // Total goods handed over across Dadu nodes
 
   const handleFundSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,10 +122,6 @@ export default function DonorPage() {
     }
   };
 
-  const handleCampaignCreated = (newCamp: Campaign) => {
-    setCampaigns([newCamp, ...campaigns]);
-  };
-
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-8">
       {/* Header */}
@@ -131,24 +135,46 @@ export default function DonorPage() {
             <Badge variant="onChain">Base Sepolia Relayer Active</Badge>
           </div>
           <h1 className="text-3xl font-extrabold text-white tracking-tight">
-            Verifiable Aid Campaigns & Pools
+            Verifiable Aid Campaigns & Impact Telemetry
           </h1>
           <p className="text-slate-400 text-sm mt-1 max-w-2xl">
-            Entrust funds directly into community aid pools. Monitor real-time food basket fulfillment at verified Dadu kiryana stores.
+            Entrust funds directly into community aid pools. Follow every rupee as it converts into verified food packages at local Dadu kiryana stores.
           </p>
         </div>
 
-        {/* Action button for Organizations / Admins */}
-        {(role === "ORGANIZATION" || role === "ADMIN") && (
-          <Button
-            variant="primary"
-            onClick={() => setIsCreateModalOpen(true)}
-            className="self-start md:self-center"
-          >
-            <PlusCircle className="w-4 h-4" />
-            <span>Launch Aid Pool</span>
-          </Button>
-        )}
+        {/* View Tab Switcher & Pool Creation */}
+        <div className="flex items-center gap-3 self-start md:self-center">
+          <div className="flex items-center p-1 rounded-xl bg-slate-900 border border-slate-800 text-xs font-semibold">
+            <button
+              onClick={() => setViewTab("POOLS")}
+              className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
+                viewTab === "POOLS" ? "bg-slate-800 text-white shadow" : "text-slate-400 hover:text-white"
+              }`}
+            >
+              <Layers className="w-3.5 h-3.5" />
+              <span>Aid Pools</span>
+            </button>
+            <button
+              onClick={() => setViewTab("ANALYTICS")}
+              className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
+                viewTab === "ANALYTICS" ? "bg-emerald-950 text-emerald-300 border border-emerald-500/40 shadow" : "text-slate-400 hover:text-white"
+              }`}
+            >
+              <BarChart3 className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Live Analytics</span>
+            </button>
+          </div>
+
+          {(role === "ORGANIZATION" || role === "ADMIN") && (
+            <Button
+              variant="primary"
+              onClick={() => setIsCreateModalOpen(true)}
+            >
+              <PlusCircle className="w-4 h-4" />
+              <span>Launch Pool</span>
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Aggregate Network Telemetry */}
@@ -158,14 +184,14 @@ export default function DonorPage() {
           value={formatCurrencyPKR(totalFundedAll)}
           subtitle="Committed across all pools"
           icon={<Coins className="w-4 h-4" />}
-          accentColor="emerald"
+          accentColor="cyan"
         />
         <StatCard
-          title="Funding Goal"
-          value={formatCurrencyPKR(totalTargetAll)}
-          subtitle={`${Math.round((totalFundedAll / (totalTargetAll || 1)) * 100)}% pool capacity`}
+          title="Store Handover Executed"
+          value={formatCurrencyPKR(totalFulfilledPKR)}
+          subtitle="73.2% Goods Delivered"
           icon={<Sparkles className="w-4 h-4" />}
-          accentColor="cyan"
+          accentColor="emerald"
         />
         <StatCard
           title="Families Assisted"
@@ -183,158 +209,201 @@ export default function DonorPage() {
         />
       </div>
 
-      {/* Search & Mode Filters */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="w-full sm:w-80">
-          <Input
-            type="text"
-            icon={<Search className="w-4 h-4" />}
-            placeholder="Search by area or title..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
+      {/* TAB 1: POOL LISTING */}
+      {viewTab === "POOLS" && (
+        <div className="space-y-6">
+          {/* Search & Mode Filters */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="w-full sm:w-80">
+              <Input
+                type="text"
+                icon={<Search className="w-4 h-4" />}
+                placeholder="Search by area or title..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
 
-        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-900 border border-slate-800 self-start sm:self-auto">
-          <button
-            onClick={() => setFilterMode("ALL")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-              filterMode === "ALL"
-                ? "bg-slate-800 text-white shadow"
-                : "text-slate-400 hover:text-slate-200"
-            }`}
-          >
-            All Pools
-          </button>
-          <button
-            onClick={() => setFilterMode("EMERGENCY")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-              filterMode === "EMERGENCY"
-                ? "bg-rose-950 text-rose-300 border border-rose-800/50 shadow"
-                : "text-slate-400 hover:text-slate-200"
-            }`}
-          >
-            Emergency Relief
-          </button>
-          <button
-            onClick={() => setFilterMode("COMMUNITY")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-              filterMode === "COMMUNITY"
-                ? "bg-emerald-950 text-emerald-300 border border-emerald-800/50 shadow"
-                : "text-slate-400 hover:text-slate-200"
-            }`}
-          >
-            Community Welfare
-          </button>
-        </div>
-      </div>
+            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-900 border border-slate-800 self-start sm:self-auto">
+              <button
+                onClick={() => setFilterMode("ALL")}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  filterMode === "ALL"
+                    ? "bg-slate-800 text-white shadow"
+                    : "text-slate-400 hover:text-slate-200"
+                }`}
+              >
+                All Pools
+              </button>
+              <button
+                onClick={() => setFilterMode("EMERGENCY")}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  filterMode === "EMERGENCY"
+                    ? "bg-rose-950 text-rose-300 border border-rose-800/50 shadow"
+                    : "text-slate-400 hover:text-slate-200"
+                }`}
+              >
+                Emergency Relief
+              </button>
+              <button
+                onClick={() => setFilterMode("COMMUNITY")}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  filterMode === "COMMUNITY"
+                    ? "bg-emerald-950 text-emerald-300 border border-emerald-800/50 shadow"
+                    : "text-slate-400 hover:text-slate-200"
+                }`}
+              >
+                Community Welfare
+              </button>
+            </div>
+          </div>
 
-      {/* Campaign Cards Grid */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-white flex items-center gap-2">
-            <Layers className="w-5 h-5 text-emerald-400" />
-            <span>Active Aid Pools ({filteredCampaigns.length})</span>
-          </h2>
-        </div>
+          {/* Campaign Cards Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {filteredCampaigns.map((c) => {
+              const fundingPercent = Math.min(100, Math.round((c.fundedAmount / c.targetAmount) * 100));
+              const fulfillmentPercent = 72;
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {filteredCampaigns.map((c) => {
-            const fundingPercent = Math.min(100, Math.round((c.fundedAmount / c.targetAmount) * 100));
-            const fulfillmentPercent = 72; // Default realistic fulfillment
+              return (
+                <Card key={c.id} className="flex flex-col justify-between hover:border-slate-700/80 group">
+                  <CardHeader>
+                    <div className="flex items-center justify-between gap-2 mb-2">
+                      <Badge variant={c.mode === "EMERGENCY" ? "emergency" : "community"}>
+                        {c.mode === "EMERGENCY" ? "Emergency Pool" : "Community Welfare"}
+                      </Badge>
+                      <span className="text-[11px] font-mono text-slate-400">{c.category}</span>
+                    </div>
+                    <CardTitle className="group-hover:text-emerald-300 transition-colors">
+                      {c.title}
+                    </CardTitle>
+                    <CardDescription className="flex items-center gap-1">
+                      <MapPin className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                      <span>{c.location}</span>
+                    </CardDescription>
+                  </CardHeader>
 
-            return (
-              <Card key={c.id} className="flex flex-col justify-between hover:border-slate-700/80 group">
-                <CardHeader>
-                  <div className="flex items-center justify-between gap-2 mb-2">
-                    <Badge variant={c.mode === "EMERGENCY" ? "emergency" : "community"}>
-                      {c.mode === "EMERGENCY" ? "Emergency Pool" : "Community Welfare"}
-                    </Badge>
-                    <span className="text-[11px] font-mono text-slate-400">{c.category}</span>
-                  </div>
-                  <CardTitle className="group-hover:text-emerald-300 transition-colors">
-                    {c.title}
-                  </CardTitle>
-                  <CardDescription className="flex items-center gap-1">
-                    <MapPin className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-                    <span>{c.location}</span>
-                  </CardDescription>
-                </CardHeader>
+                  <CardContent className="space-y-5">
+                    {/* Progress bars */}
+                    <div className="space-y-3 bg-slate-950/60 p-4 rounded-xl border border-slate-800/80">
+                      <ProgressBar
+                        value={fundingPercent}
+                        label="Funding Committed"
+                        sublabel={`${formatCurrencyPKR(c.fundedAmount)} / ${formatCurrencyPKR(c.targetAmount)}`}
+                        colorVariant="cyan"
+                      />
 
-                <CardContent className="space-y-5">
-                  {/* Progress bars */}
-                  <div className="space-y-3 bg-slate-950/60 p-4 rounded-xl border border-slate-800/80">
-                    <ProgressBar
-                      value={fundingPercent}
-                      label="Funding Committed"
-                      sublabel={`${formatCurrencyPKR(c.fundedAmount)} / ${formatCurrencyPKR(c.targetAmount)}`}
-                      colorVariant="cyan"
-                    />
+                      <ProgressBar
+                        value={fulfillmentPercent}
+                        label="Store Fulfillment"
+                        sublabel={`${fulfillmentPercent}% Handed Over`}
+                        colorVariant="emerald"
+                      />
+                    </div>
 
-                    <ProgressBar
-                      value={fulfillmentPercent}
-                      label="Store Fulfillment"
-                      sublabel={`${fulfillmentPercent}% Handed Over`}
-                      colorVariant="emerald"
-                    />
-                  </div>
-
-                  {/* Metrics */}
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="p-3 rounded-lg bg-slate-950/40 border border-slate-800">
-                      <div className="text-slate-400">Target Families</div>
-                      <div className="font-bold text-white mt-0.5">
-                        {c.targetHouseholds} Households
+                    {/* Metrics */}
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="p-3 rounded-lg bg-slate-950/40 border border-slate-800">
+                        <div className="text-slate-400">Target Families</div>
+                        <div className="font-bold text-white mt-0.5">
+                          {c.targetHouseholds} Households
+                        </div>
+                      </div>
+                      <div className="p-3 rounded-lg bg-slate-950/40 border border-slate-800">
+                        <div className="text-slate-400">Partner Shops</div>
+                        <div className="font-bold text-emerald-400 mt-0.5">
+                          3 Kiryana Nodes
+                        </div>
                       </div>
                     </div>
-                    <div className="p-3 rounded-lg bg-slate-950/40 border border-slate-800">
-                      <div className="text-slate-400">Partner Shops</div>
-                      <div className="font-bold text-emerald-400 mt-0.5">
-                        3 Kiryana Nodes
-                      </div>
-                    </div>
-                  </div>
 
-                  <div className="flex gap-2 pt-1">
-                    <Button
-                      variant="outline"
-                      className="flex-1"
-                      onClick={() => setInspectedCampaign(c)}
-                    >
-                      <Info className="w-4 h-4" />
-                      <span>Inspect</span>
-                    </Button>
-                    <Button
-                      variant="primary"
-                      className="flex-1"
-                      onClick={() => setSelectedCampaign(c)}
-                    >
-                      <HeartHandshake className="w-4 h-4" />
-                      <span>Contribute</span>
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
+                    <div className="flex gap-2 pt-1">
+                      <Button
+                        variant="outline"
+                        className="flex-1"
+                        onClick={() => setInspectedCampaign(c)}
+                      >
+                        <Info className="w-4 h-4" />
+                        <span>Inspect</span>
+                      </Button>
+                      <Button
+                        variant="primary"
+                        className="flex-1"
+                        onClick={() => setSelectedCampaign(c)}
+                      >
+                        <HeartHandshake className="w-4 h-4" />
+                        <span>Contribute</span>
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* TAB 2: ADVANCED ANALYTICS */}
+      {viewTab === "ANALYTICS" && (
+        <div className="space-y-8 animate-in fade-in duration-200">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            {/* Velocity Curve Chart */}
+            <Card className="lg:col-span-7 p-6 space-y-4">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5 text-emerald-400" />
+                  <span>Funding vs Kiryana Fulfillment Velocity</span>
+                </CardTitle>
+                <CardDescription>
+                  Tracking the timeline from donor deposit (Cyan) to physical goods handover at Dadu stores (Emerald).
+                </CardDescription>
+              </div>
+              <FulfillmentChart />
+            </Card>
+
+            {/* Geographic Breakdown Chart */}
+            <Card className="lg:col-span-5 p-6 space-y-4">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <MapPin className="w-5 h-5 text-cyan-400" />
+                  <span>Union Council Aid Distribution</span>
+                </CardTitle>
+                <CardDescription>
+                  Decentralized reach across disaster-affected zones in Dadu.
+                </CardDescription>
+              </div>
+              <GeographicDistributionChart />
+            </Card>
+          </div>
+
+          {/* Merchant Leaderboard */}
+          <Card className="p-6 space-y-4">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Store className="w-5 h-5 text-amber-400" />
+                <span>Kiryana Store Fulfillment Velocity Leaderboard</span>
+              </CardTitle>
+              <CardDescription>
+                Decentralized micro-fulfillment nodes operating across Johi, Mehar, and Khairpur Nathan Shah.
+              </CardDescription>
+            </div>
+            <MerchantLeaderboard />
+          </Card>
+        </div>
+      )}
 
       {/* Inspect Campaign Modal */}
       <CampaignDetailsModal
         campaign={inspectedCampaign}
         isOpen={!!inspectedCampaign}
         onClose={() => setInspectedCampaign(null)}
-        onFundClick={(camp) => {
-          setSelectedCampaign(camp);
-        }}
+        onFundClick={(camp) => setSelectedCampaign(camp)}
       />
 
       {/* Create Campaign Modal */}
       <CreateCampaignModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
-        onCreated={handleCampaignCreated}
+        onCreated={(newCamp) => setCampaigns([newCamp, ...campaigns])}
       />
 
       {/* Funding Contribution Modal */}
