@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getSupabaseServiceClient } from "@/lib/supabase/service";
+import { submitOnChainRedemption } from "@/lib/blockchain/relayer";
 
 const SettlementRequestSchema = z.object({
   voucherCode: z.string().min(4),
@@ -24,13 +25,16 @@ export async function POST(req: NextRequest) {
     const { voucherCode, merchantId, amount } = parsed.data;
     const cleanCode = voucherCode.trim();
 
-    const simulatedTxHash = `0x${Array.from({ length: 64 }, () =>
-      Math.floor(Math.random() * 16).toString(16)
-    ).join("")}`;
+    // 1. Submit on-chain via Backend Relayer
+    const relayerResult = await submitOnChainRedemption(
+      1, // Campaign ID
+      cleanCode,
+      amount
+    );
 
     const supabase = getSupabaseServiceClient();
     if (supabase) {
-      // 1. Fetch voucher & entitlement
+      // Fetch voucher & entitlement
       const { data: voucher, error: vErr } = await supabase
         .from("vouchers")
         .select("*, entitlements(*, households(*))")
@@ -50,7 +54,7 @@ export async function POST(req: NextRequest) {
         const newRemaining = currentRemaining - amount;
         const newStatus = newRemaining === 0 ? "FULLY_REDEEMED" : "PARTIALLY_REDEEMED";
 
-        // 2. Update voucher
+        // Update voucher
         await supabase
           .from("vouchers")
           .update({
@@ -60,7 +64,7 @@ export async function POST(req: NextRequest) {
           })
           .eq("id", voucher.id);
 
-        // 3. Update entitlement
+        // Update entitlement
         await supabase
           .from("entitlements")
           .update({
@@ -69,14 +73,14 @@ export async function POST(req: NextRequest) {
           })
           .eq("id", voucher.entitlement_id);
 
-        // 4. Fetch first merchant ID if default
+        // Fetch first merchant ID if default
         let actualMerchantId = merchantId;
         const { data: merchantData } = await supabase.from("merchants").select("id").limit(1).maybeSingle();
         if (merchantData?.id) {
           actualMerchantId = merchantData.id;
         }
 
-        // 5. Insert redemption record
+        // Insert redemption record with relayer txHash
         const { data: redemptionRecord } = await supabase
           .from("redemptions")
           .insert({
@@ -85,13 +89,13 @@ export async function POST(req: NextRequest) {
             merchant_id: actualMerchantId,
             amount,
             remaining_balance_after: newRemaining,
-            blockchain_tx_hash: simulatedTxHash,
-            on_chain_status: "CONFIRMED",
+            blockchain_tx_hash: relayerResult.txHash,
+            on_chain_status: relayerResult.isSimulated ? "SIMULATED" : "CONFIRMED",
           })
           .select()
           .single();
 
-        // 6. Insert audit event
+        // Insert audit event
         await supabase.from("audit_events").insert({
           action: "MERCHANT_REDEMPTION_SETTLED",
           entity_type: "REDEMPTION",
@@ -103,21 +107,23 @@ export async function POST(req: NextRequest) {
             householdId: voucher.entitlements?.households?.household_code || "AMN-48291",
             fulfilledAmount: amount,
             remainingBalanceAfter: newRemaining,
-            status: newStatus,
+            isSimulated: relayerResult.isSimulated,
           },
-          blockchain_tx_hash: simulatedTxHash,
+          blockchain_tx_hash: relayerResult.txHash,
         });
 
         return NextResponse.json({
           success: true,
-          message: "Fulfillment confirmed and settlement queued on Base Sepolia",
+          message: "Fulfillment confirmed and settlement processed",
           redemption: {
             id: redemptionRecord?.id || `RED-${Date.now()}`,
             voucherCode: cleanCode,
             householdId: voucher.entitlements?.households?.household_code || "AMN-48291",
             fulfilledAmount: amount,
             remainingBalance: newRemaining,
-            blockchainTxHash: simulatedTxHash,
+            blockchainTxHash: relayerResult.txHash,
+            explorerUrl: relayerResult.explorerUrl,
+            isSimulated: relayerResult.isSimulated,
             status: "CONFIRMED",
             timestamp: new Date().toISOString(),
           },
@@ -136,7 +142,9 @@ export async function POST(req: NextRequest) {
         householdId: "AMN-48291",
         fulfilledAmount: amount,
         remainingBalance: remainingAfter,
-        blockchainTxHash: simulatedTxHash,
+        blockchainTxHash: relayerResult.txHash,
+        explorerUrl: relayerResult.explorerUrl,
+        isSimulated: relayerResult.isSimulated,
         status: "CONFIRMED",
         timestamp: new Date().toISOString(),
       },

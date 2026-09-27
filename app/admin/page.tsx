@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   Activity, 
   ShieldCheck, 
@@ -12,7 +12,8 @@ import {
   ExternalLink,
   Lock,
   RefreshCw,
-  AlertTriangle
+  AlertTriangle,
+  Radio
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -20,11 +21,28 @@ import { Button } from "@/components/ui/button";
 import { StatCard } from "@/components/ui/stat-card";
 import { formatCurrencyPKR } from "@/lib/utils";
 
+interface RelayerTelemetry {
+  isConfigured: boolean;
+  relayerAddress: string;
+  contractAddress: string;
+  network: string;
+  chainId: number;
+  balanceETH: string;
+}
+
 export default function AdminPage() {
   const [isEmergencyMode, setIsEmergencyMode] = useState(true);
   const [isSwitching, setIsSwitching] = useState(false);
+  const [relayerInfo, setRelayerInfo] = useState<RelayerTelemetry>({
+    isConfigured: false,
+    relayerAddress: "0x4a9d...c9b2",
+    contractAddress: "0x0000000000000000000000000000000000000000",
+    network: "Base Sepolia Testnet",
+    chainId: 84532,
+    balanceETH: "0.420 Sepolia ETH",
+  });
 
-  const [auditLogs] = useState([
+  const [auditLogs, setAuditLogs] = useState<any[]>([
     {
       id: "AUD-1092",
       action: "MERCHANT_REDEMPTION_SETTLED",
@@ -32,7 +50,7 @@ export default function AdminPage() {
       entity: "Voucher #4827 (Household AMN-48291)",
       amount: "Rs. 1,200",
       txHash: "0x8fa37d2f9b1c08e5e8a6d71c4a0e7f53942b03ef820468903c15d48726b1a9f0",
-      timestamp: "2 minutes ago",
+      timestamp: "Just now",
     },
     {
       id: "AUD-1091",
@@ -58,10 +76,37 @@ export default function AdminPage() {
       actor: "Donor (0x71...8b)",
       entity: "Dadu Emergency Relief Pool",
       amount: "Rs. 100,000",
-      txHash: "0x1b4c9e82a...981c2",
+      txHash: "0x1b4c9e82a981c2f901ab29e4726b1a9f0e8a6d71c4a0e7f53942b03ef8204689",
       timestamp: "1 hour ago",
     },
   ]);
+
+  useEffect(() => {
+    async function loadRelayerStatus() {
+      try {
+        const res = await fetch("/api/admin/relayer");
+        const data = await res.json();
+        if (data.success && data.relayer) {
+          setRelayerInfo(data.relayer);
+          if (data.recentEvents && data.recentEvents.length > 0) {
+            const mapped = data.recentEvents.map((e: any) => ({
+              id: `AUD-${e.id.slice(0, 6)}`,
+              action: e.action,
+              actor: e.actor_role,
+              entity: e.entity_type,
+              amount: e.details?.fulfilledAmount ? formatCurrencyPKR(e.details.fulfilledAmount) : "N/A",
+              txHash: e.blockchain_tx_hash || "Off-Chain",
+              timestamp: new Date(e.created_at).toLocaleTimeString(),
+            }));
+            setAuditLogs(mapped);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load relayer status:", err);
+      }
+    }
+    loadRelayerStatus();
+  }, []);
 
   const toggleEmergencyMode = () => {
     setIsSwitching(true);
@@ -81,20 +126,20 @@ export default function AdminPage() {
               <Activity className="w-3.5 h-3.5" />
               <span>Amanat Infrastructure Control Plane</span>
             </Badge>
-            <Badge variant="onChain">Base Sepolia Node: Healthy</Badge>
+            <Badge variant="onChain">Base Sepolia Chain #84532</Badge>
           </div>
           <h1 className="text-3xl font-extrabold text-white tracking-tight">
             System Administration & Relayer Ledger
           </h1>
           <p className="text-slate-400 text-sm mt-1 max-w-2xl">
-            Audit cryptographic settlement events, verify merchant payouts, and toggle regional emergency protocols for Dadu.
+            Audit cryptographic settlement events, inspect server-relayer gas balances, and manage regional emergency protocols for Dadu.
           </p>
         </div>
 
         {/* Emergency Mode Switcher */}
         <div className="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 flex items-center gap-4">
           <div className="text-left">
-            <div className="text-[10px] uppercase font-bold text-slate-400">Network State</div>
+            <div className="text-[10px] uppercase font-bold text-slate-400">Network Mode</div>
             <div className="text-xs font-bold text-white flex items-center gap-1.5 mt-0.5">
               {isEmergencyMode ? (
                 <span className="text-rose-400 flex items-center gap-1">
@@ -129,33 +174,58 @@ export default function AdminPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           title="Base Sepolia Relayer"
-          value="0.420 ETH"
-          subtitle="Gas Subsidized • No Tx Queue"
+          value={relayerInfo.balanceETH}
+          subtitle={relayerInfo.isConfigured ? "Live Relayer Active" : "Gas Subsidized (Demo)"}
           icon={<Server className="w-4 h-4" />}
           accentColor="cyan"
         />
         <StatCard
-          title="PostgreSQL Database"
-          value="Active (Supabase)"
-          subtitle="RLS Policies Enforced"
+          title="Off-Chain Engine"
+          value="PostgreSQL / RLS"
+          subtitle="Supabase Active"
           icon={<Database className="w-4 h-4" />}
           accentColor="emerald"
         />
         <StatCard
           title="Active Kiryana Nodes"
           value="3 Stores"
-          subtitle="Dadu, Johi, Mehar"
+          subtitle="Johi, Mehar, KN Shah"
           icon={<Zap className="w-4 h-4" />}
           accentColor="amber"
         />
         <StatCard
-          title="Redemptions Settled"
-          value="18 Orders"
+          title="Settlements Executed"
+          value={`${auditLogs.length} Events`}
           subtitle="100% Cryptographic Match"
           icon={<ShieldCheck className="w-4 h-4" />}
           accentColor="indigo"
         />
       </div>
+
+      {/* Relayer Node Details Card */}
+      <Card className="p-6 bg-slate-900/90 border border-slate-800 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+          <div className="flex items-center gap-2 text-white font-bold text-sm">
+            <Radio className="w-4 h-4 text-cyan-400 animate-pulse" />
+            <span>Gasless Relayer Service Health</span>
+          </div>
+          <span className="text-xs font-mono text-cyan-400">
+            Chain ID: 84532 (Base Sepolia)
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          <div className="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-1">
+            <span className="text-slate-400 font-semibold">Relayer Wallet Address:</span>
+            <div className="font-mono text-slate-200 truncate">{relayerInfo.relayerAddress}</div>
+          </div>
+
+          <div className="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-1">
+            <span className="text-slate-400 font-semibold">Smart Contract Address:</span>
+            <div className="font-mono text-slate-200 truncate">{relayerInfo.contractAddress}</div>
+          </div>
+        </div>
+      </Card>
 
       {/* Audit Log Table */}
       <Card>
@@ -164,7 +234,7 @@ export default function AdminPage() {
             <div>
               <CardTitle>Immutable Transaction & Settlement Trail</CardTitle>
               <CardDescription>
-                Synchronized log between Supabase off-chain entitlements and Base Sepolia smart contract state.
+                Synchronized audit stream between Supabase off-chain entitlements and Base Sepolia smart contract state.
               </CardDescription>
             </div>
           </div>
@@ -200,7 +270,7 @@ export default function AdminPage() {
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1 hover:underline hover:text-cyan-300"
                         >
-                          <span className="truncate max-w-[120px]">{log.txHash}</span>
+                          <span className="truncate max-w-[140px]">{log.txHash}</span>
                           <ExternalLink className="w-3 h-3 flex-shrink-0" />
                         </a>
                       ) : (
