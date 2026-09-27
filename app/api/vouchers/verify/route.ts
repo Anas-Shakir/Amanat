@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getSupabaseServiceClient } from "@/lib/supabase/service";
+import { checkRateLimit, recordFailedAttempt, resetRateLimit } from "@/lib/security/rate-limiter";
 
 const VerifyVoucherSchema = z.object({
   voucherCode: z.string().min(4, "Voucher code must be at least 4 digits").max(8),
@@ -45,6 +46,30 @@ const DEMO_VOUCHERS: Record<string, any> = {
     category: "Zakat Ration",
     validUntil: "2026-10-31",
   },
+  "0000": {
+    code: "0000",
+    householdId: "AMN-EXPIRED",
+    headOfHousehold: "Expired Test Household",
+    campaignTitle: "Expired Pool",
+    totalEntitlement: 4000,
+    alreadyRedeemed: 0,
+    remainingAmount: 4000,
+    status: "EXPIRED",
+    category: "Emergency Food",
+    validUntil: "2024-01-01",
+  },
+  "1111": {
+    code: "1111",
+    householdId: "AMN-REDEEMED",
+    headOfHousehold: "Fully Redeemed Household",
+    campaignTitle: "Redeemed Pool",
+    totalEntitlement: 4000,
+    alreadyRedeemed: 4000,
+    remainingAmount: 0,
+    status: "FULLY_REDEEMED",
+    category: "Emergency Food",
+    validUntil: "2026-10-31",
+  },
 };
 
 export async function POST(req: NextRequest) {
@@ -61,6 +86,21 @@ export async function POST(req: NextRequest) {
 
     const { voucherCode } = parsed.data;
     const cleanCode = voucherCode.trim();
+    const clientIp = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "local-client";
+    const rateLimitKey = `${clientIp}:${cleanCode}`;
+
+    // Check brute force rate limit
+    const rateCheck = checkRateLimit(rateLimitKey);
+    if (!rateCheck.allowed) {
+      return NextResponse.json(
+        {
+          error: `Too many failed attempts. Verification is locked. Please retry in ${rateCheck.lockedForSeconds} seconds.`,
+          lockedForSeconds: rateCheck.lockedForSeconds,
+          errorCode: "RATE_LIMITED",
+        },
+        { status: 429 }
+      );
+    }
 
     // 1. Try Supabase lookup
     const supabase = getSupabaseServiceClient();
@@ -78,19 +118,22 @@ export async function POST(req: NextRequest) {
         const rem = Number(voucher.remaining_amount);
 
         if (voucher.status === "EXPIRED") {
+          recordFailedAttempt(rateLimitKey);
           return NextResponse.json(
-            { error: "This voucher has expired and can no longer be redeemed." },
+            { error: "This voucher has expired and can no longer be redeemed.", errorCode: "VOUCHER_EXPIRED" },
             { status: 400 }
           );
         }
 
         if (voucher.status === "FULLY_REDEEMED" || rem <= 0) {
+          recordFailedAttempt(rateLimitKey);
           return NextResponse.json(
-            { error: "This voucher entitlement has already been fully redeemed." },
+            { error: "This voucher entitlement has already been fully redeemed.", errorCode: "VOUCHER_ALREADY_REDEEMED" },
             { status: 400 }
           );
         }
 
+        resetRateLimit(rateLimitKey);
         return NextResponse.json({
           success: true,
           voucher: {
@@ -112,14 +155,45 @@ export async function POST(req: NextRequest) {
 
     // 2. Demo fallback vouchers
     if (DEMO_VOUCHERS[cleanCode]) {
+      const demo = DEMO_VOUCHERS[cleanCode];
+      if (demo.status === "EXPIRED") {
+        recordFailedAttempt(rateLimitKey);
+        return NextResponse.json(
+          { error: "This voucher has expired and can no longer be redeemed.", errorCode: "VOUCHER_EXPIRED" },
+          { status: 400 }
+        );
+      }
+      if (demo.status === "FULLY_REDEEMED" || demo.remainingAmount <= 0) {
+        recordFailedAttempt(rateLimitKey);
+        return NextResponse.json(
+          { error: "This voucher entitlement has already been fully redeemed.", errorCode: "VOUCHER_ALREADY_REDEEMED" },
+          { status: 400 }
+        );
+      }
+
+      resetRateLimit(rateLimitKey);
       return NextResponse.json({
         success: true,
         voucher: DEMO_VOUCHERS[cleanCode],
       });
     }
 
-    // 3. Any 4-digit code in demo mode creates a valid synthetic entitlement
+    // 3. Known Invalid / Test abuse codes
+    if (cleanCode === "9999" || cleanCode === "XXXX") {
+      const failInfo = recordFailedAttempt(rateLimitKey);
+      return NextResponse.json(
+        {
+          error: "Voucher code not found or invalid",
+          errorCode: "VOUCHER_NOT_FOUND",
+          isNowLocked: failInfo.isNowLocked,
+        },
+        { status: 404 }
+      );
+    }
+
+    // 4. Any generic 4-digit code in demo mode creates a valid synthetic entitlement
     if (/^\d{4}$/.test(cleanCode)) {
+      resetRateLimit(rateLimitKey);
       return NextResponse.json({
         success: true,
         voucher: {
@@ -137,8 +211,9 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    recordFailedAttempt(rateLimitKey);
     return NextResponse.json(
-      { error: "Voucher code not found or invalid" },
+      { error: "Voucher code not found or invalid", errorCode: "VOUCHER_NOT_FOUND" },
       { status: 404 }
     );
   } catch (error: any) {

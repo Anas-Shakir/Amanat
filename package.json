@@ -8,7 +8,8 @@
     "dev:host": "next dev -H 0.0.0.0",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:security": "npx tsx scripts/test-security-suite.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.2",
