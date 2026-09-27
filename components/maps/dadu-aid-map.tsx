@@ -58,10 +58,10 @@ export default function DaduAidMap({
 
       mapInstanceRef.current = map;
 
-      // Add CartoDB Dark Matter / OSM Tile Layer
-      L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        subdomains: "abcd",
+      // Add standard OpenStreetMap Tile Layer (styled dark via CSS filter in globals.css)
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        subdomains: ["a", "b", "c"],
         maxZoom: 19,
       }).addTo(map);
 

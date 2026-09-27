@@ -1,0 +1,22 @@
+# Amanat — Verifiable Local Aid Infrastructure (Dadu, Sindh)
+# Python & Environment Dependencies Specification
+
+# Core Utilities & Web3
+web3>=6.15.0
+eth-account>=0.11.0
+requests>=2.31.0
+pydantic>=2.6.0
+python-dotenv>=1.0.1
+
+# Supabase & Database Integration
+supabase>=2.3.0
+postgrest>=0.13.0
+
+# Geographic & Data Analysis
+geopy>=2.4.1
+shapely>=2.0.3
+
+# Development, Testing & Verification
+pytest>=8.0.0
+black>=24.2.0
+flake8>=7.0.0
