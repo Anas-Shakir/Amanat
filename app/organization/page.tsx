@@ -9,10 +9,12 @@ import {
   PlusCircle, 
   Search, 
   Filter, 
-  Ticket,
-  CheckCircle2,
-  Layers,
-  HeartHandshake
+  Ticket, 
+  CheckCircle2, 
+  Layers, 
+  HeartHandshake,
+  FileSpreadsheet,
+  Info
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -21,6 +23,7 @@ import { StatCard } from "@/components/ui/stat-card";
 import { Modal } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
 import { CreateCampaignModal } from "@/components/campaigns/create-campaign-modal";
+import { HouseholdDetailsModal } from "@/components/households/household-details-modal";
 import { Campaign } from "@/types";
 import { formatCurrencyPKR } from "@/lib/utils";
 
@@ -33,57 +36,20 @@ interface HouseholdItem {
   assessment: string;
   entitlementAmount: number;
   remainingAmount: number;
-  status: "VERIFIED" | "PENDING_ASSESSMENT" | "FLAGGED";
+  status: "VERIFIED" | "PENDING" | "FLAGGED";
   lastVoucherCode: string;
   campaignTitle?: string;
 }
 
 export default function OrganizationPage() {
-  const [households, setHouseholds] = useState<HouseholdItem[]>([
-    {
-      id: "1",
-      householdId: "AMN-48291",
-      headOfFamily: "Ghulam Nabi",
-      familySize: 6,
-      area: "Johi Union Council 4, Dadu",
-      assessment: "Flood Displaced (2022/2024)",
-      entitlementAmount: 4000,
-      remainingAmount: 2650,
-      status: "VERIFIED",
-      lastVoucherCode: "4827",
-      campaignTitle: "Dadu Flood Emergency Food Relief",
-    },
-    {
-      id: "2",
-      householdId: "AMN-48292",
-      headOfFamily: "Zulekha Bibi",
-      familySize: 4,
-      area: "Mehar Main Bazaar, Dadu",
-      assessment: "Widow Household / Food Insecure",
-      entitlementAmount: 4000,
-      remainingAmount: 4000,
-      status: "VERIFIED",
-      lastVoucherCode: "5914",
-      campaignTitle: "Dadu Flood Emergency Food Relief",
-    },
-    {
-      id: "3",
-      householdId: "AMN-48293",
-      headOfFamily: "Ali Murad",
-      familySize: 8,
-      area: "Radhan Station, Dadu",
-      assessment: "Crop Inundation Loss",
-      entitlementAmount: 5000,
-      remainingAmount: 5000,
-      status: "PENDING_ASSESSMENT",
-      lastVoucherCode: "8203",
-      campaignTitle: "Dadu Community Zakat Support",
-    },
-  ]);
-
+  const [households, setHouseholds] = useState<HouseholdItem[]>([]);
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"ALL" | "VERIFIED" | "PENDING">("ALL");
+
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [isCreateCampaignOpen, setIsCreateCampaignOpen] = useState(false);
+  const [inspectedHousehold, setInspectedHousehold] = useState<HouseholdItem | null>(null);
 
   // Form states for new household
   const [newHeadName, setNewHeadName] = useState("");
@@ -92,53 +58,84 @@ export default function OrganizationPage() {
   const [newAssessment, setNewAssessment] = useState("Flood Affected / Priority Category A");
   const [newAmount, setNewAmount] = useState("4000");
   const [selectedCampaignId, setSelectedCampaignId] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    async function fetchCampaigns() {
+    async function loadData() {
       try {
-        const res = await fetch("/api/campaigns");
-        const data = await res.json();
-        if (data.success && data.campaigns) {
-          setCampaigns(data.campaigns);
-          if (data.campaigns.length > 0) {
-            setSelectedCampaignId(data.campaigns[0].id);
+        const [hhRes, campRes] = await Promise.all([
+          fetch("/api/households"),
+          fetch("/api/campaigns"),
+        ]);
+        const hhData = await hhRes.json();
+        const campData = await campRes.json();
+
+        if (hhData.success && hhData.households) {
+          setHouseholds(hhData.households);
+        }
+        if (campData.success && campData.campaigns) {
+          setCampaigns(campData.campaigns);
+          if (campData.campaigns.length > 0) {
+            setSelectedCampaignId(campData.campaigns[0].id);
           }
         }
       } catch (err) {
-        console.error("Failed to load campaigns:", err);
+        console.error("Failed to load organization data:", err);
       }
     }
-    fetchCampaigns();
+    loadData();
   }, []);
 
-  const handleRegisterHousehold = (e: React.FormEvent) => {
+  const handleRegisterHousehold = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newId = `AMN-${Math.floor(10000 + Math.random() * 90000)}`;
-    const newVoucher = `${Math.floor(1000 + Math.random() * 9000)}`;
-    const campObj = campaigns.find((c) => c.id === selectedCampaignId) || campaigns[0];
+    setIsSubmitting(true);
 
-    const newEntry: HouseholdItem = {
-      id: String(households.length + 1),
-      householdId: newId,
-      headOfFamily: newHeadName,
-      familySize: Number(newFamilySize) || 5,
-      area: newArea,
-      assessment: newAssessment,
-      entitlementAmount: Number(newAmount) || 4000,
-      remainingAmount: Number(newAmount) || 4000,
-      status: "VERIFIED",
-      lastVoucherCode: newVoucher,
-      campaignTitle: campObj?.title || "Dadu Flood Relief",
-    };
+    try {
+      const res = await fetch("/api/households", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          headOfHousehold: newHeadName,
+          familySize: Number(newFamilySize) || 5,
+          area: newArea,
+          city: "Dadu",
+          displacementStatus: "Flood Displaced",
+          assessment: newAssessment,
+          campaignId: selectedCampaignId || campaigns[0]?.id || "cmp-01",
+          entitlementAmount: Number(newAmount) || 4000,
+        }),
+      });
 
-    setHouseholds([newEntry, ...households]);
-    setIsRegisterModalOpen(false);
-    setNewHeadName("");
+      const data = await res.json();
+      if (data.success && data.household) {
+        const campObj = campaigns.find((c) => c.id === selectedCampaignId) || campaigns[0];
+        setHouseholds([
+          {
+            ...data.household,
+            campaignTitle: campObj?.title || "Dadu Flood Emergency Food Relief",
+          },
+          ...households,
+        ]);
+        setIsRegisterModalOpen(false);
+        setNewHeadName("");
+      }
+    } catch (err) {
+      console.error("Household creation error:", err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleCampaignCreated = (newCamp: Campaign) => {
-    setCampaigns([newCamp, ...campaigns]);
-  };
+  const filteredHouseholds = households.filter((h) => {
+    const matchesStatus = statusFilter === "ALL" || h.status === statusFilter;
+    const matchesSearch =
+      h.headOfFamily.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      h.householdId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      h.area.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesStatus && matchesSearch;
+  });
+
+  const totalEntrusted = households.reduce((acc, h) => acc + h.entitlementAmount, 0);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-8">
@@ -190,7 +187,7 @@ export default function OrganizationPage() {
         />
         <StatCard
           title="Total Aid Entrusted"
-          value={formatCurrencyPKR(households.reduce((acc, h) => acc + h.entitlementAmount, 0))}
+          value={formatCurrencyPKR(totalEntrusted)}
           subtitle="Allocated to vouchers"
           icon={<Ticket className="w-4 h-4" />}
           accentColor="emerald"
@@ -204,6 +201,52 @@ export default function OrganizationPage() {
         />
       </div>
 
+      {/* Search & Status Filter */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="w-full sm:w-80">
+          <Input
+            type="text"
+            icon={<Search className="w-4 h-4" />}
+            placeholder="Search by ID, name, or UC..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+
+        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-900 border border-slate-800 self-start sm:self-auto">
+          <button
+            onClick={() => setStatusFilter("ALL")}
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              statusFilter === "ALL"
+                ? "bg-slate-800 text-white shadow"
+                : "text-slate-400 hover:text-slate-200"
+            }`}
+          >
+            All Families
+          </button>
+          <button
+            onClick={() => setStatusFilter("VERIFIED")}
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              statusFilter === "VERIFIED"
+                ? "bg-emerald-950 text-emerald-300 border border-emerald-800/50 shadow"
+                : "text-slate-400 hover:text-slate-200"
+            }`}
+          >
+            Verified ({households.filter((h) => h.status === "VERIFIED").length})
+          </button>
+          <button
+            onClick={() => setStatusFilter("PENDING")}
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              statusFilter === "PENDING"
+                ? "bg-amber-950 text-amber-300 border border-amber-800/50 shadow"
+                : "text-slate-400 hover:text-slate-200"
+            }`}
+          >
+            Pending Survey
+          </button>
+        </div>
+      </div>
+
       {/* Registry Table */}
       <Card>
         <CardHeader>
@@ -211,7 +254,7 @@ export default function OrganizationPage() {
             <div>
               <CardTitle>Household Aid Records (Dadu Basin)</CardTitle>
               <CardDescription>
-                Click any household to view entitlement details or re-issue SMS voucher codes.
+                Click any household row to inspect field survey notes, view redemption history, or copy SMS voucher codes.
               </CardDescription>
             </div>
           </div>
@@ -227,26 +270,29 @@ export default function OrganizationPage() {
                   <th className="py-3 px-4">Family Size</th>
                   <th className="py-3 px-4">Associated Aid Pool</th>
                   <th className="py-3 px-4">Area / UC</th>
-                  <th className="py-3 px-4">Assessment</th>
                   <th className="py-3 px-4">Allocated</th>
                   <th className="py-3 px-4">Remaining</th>
-                  <th className="py-3 px-4">Voucher</th>
+                  <th className="py-3 px-4">Voucher PIN</th>
                   <th className="py-3 px-4">Status</th>
+                  <th className="py-3 px-4">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800 text-slate-300">
-                {households.map((hh) => (
-                  <tr key={hh.id} className="hover:bg-slate-850/50 transition-colors">
+                {filteredHouseholds.map((hh) => (
+                  <tr
+                    key={hh.id}
+                    className="hover:bg-slate-850/60 transition-colors cursor-pointer"
+                    onClick={() => setInspectedHousehold(hh)}
+                  >
                     <td className="py-3.5 px-4 font-mono font-bold text-indigo-400">
                       {hh.householdId}
                     </td>
                     <td className="py-3.5 px-4 font-medium text-white">{hh.headOfFamily}</td>
                     <td className="py-3.5 px-4">{hh.familySize} members</td>
                     <td className="py-3.5 px-4 text-slate-300 truncate max-w-[160px]">
-                      {hh.campaignTitle || "Emergency Pool"}
+                      {hh.campaignTitle || "Emergency Food Pool"}
                     </td>
                     <td className="py-3.5 px-4 text-slate-400">{hh.area}</td>
-                    <td className="py-3.5 px-4 text-slate-300">{hh.assessment}</td>
                     <td className="py-3.5 px-4 font-semibold text-slate-200">
                       {formatCurrencyPKR(hh.entitlementAmount)}
                     </td>
@@ -255,13 +301,19 @@ export default function OrganizationPage() {
                     </td>
                     <td className="py-3.5 px-4">
                       <span className="font-mono font-bold text-amber-400 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-600/40">
-                        {hh.lastVoucherCode}
+                        {hh.lastVoucherCode || "4827"}
                       </span>
                     </td>
                     <td className="py-3.5 px-4">
                       <Badge variant={hh.status === "VERIFIED" ? "verified" : "pending"}>
                         {hh.status}
                       </Badge>
+                    </td>
+                    <td className="py-3.5 px-4">
+                      <Button size="sm" variant="ghost" className="h-7 px-2 text-[11px]">
+                        <Info className="w-3.5 h-3.5 mr-1" />
+                        <span>View</span>
+                      </Button>
                     </td>
                   </tr>
                 ))}
@@ -270,6 +322,13 @@ export default function OrganizationPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Household Details Modal */}
+      <HouseholdDetailsModal
+        household={inspectedHousehold}
+        isOpen={!!inspectedHousehold}
+        onClose={() => setInspectedHousehold(null)}
+      />
 
       {/* Register Household Modal */}
       <Modal
@@ -383,8 +442,13 @@ export default function OrganizationPage() {
             >
               Cancel
             </Button>
-            <Button type="submit" variant="primary" className="flex-1">
-              Save & Generate Voucher
+            <Button
+              type="submit"
+              variant="primary"
+              className="flex-1"
+              disabled={isSubmitting || !newHeadName}
+            >
+              {isSubmitting ? "Registering..." : "Save & Generate Voucher"}
             </Button>
           </div>
         </form>
@@ -394,7 +458,7 @@ export default function OrganizationPage() {
       <CreateCampaignModal
         isOpen={isCreateCampaignOpen}
         onClose={() => setIsCreateCampaignOpen(false)}
-        onCreated={handleCampaignCreated}
+        onCreated={(newCamp) => setCampaigns([newCamp, ...campaigns])}
       />
     </div>
   );
