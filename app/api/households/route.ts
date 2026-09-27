@@ -9,7 +9,8 @@ const CreateHouseholdSchema = z.object({
   area: z.string().min(3, "Area/UC required"),
   city: z.string().default("Dadu"),
   displacementStatus: z.string().default("Flood Displaced"),
-  assessment: z.string().min(5, "Assessment details required"),
+  assessment: z.string().optional().default("Field verified household requiring immediate nutrition assistance."),
+  assessmentNotes: z.string().optional(),
   campaignId: z.string(),
   entitlementAmount: z.number().positive().default(4000),
 });
@@ -125,7 +126,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { headOfHousehold, familySize, area, city, displacementStatus, assessment, campaignId, entitlementAmount } = parsed.data;
+    const { headOfHousehold, familySize, area, city, displacementStatus, assessment, assessmentNotes, campaignId, entitlementAmount } = parsed.data;
+    const finalNotes = assessmentNotes || assessment || "Field verified household requiring immediate nutrition assistance.";
 
     const generatedHouseholdCode = `AMN-${Math.floor(10000 + Math.random() * 90000)}`;
     const generatedVoucherCode = `${Math.floor(1000 + Math.random() * 9000)}`;
@@ -143,7 +145,7 @@ export async function POST(req: NextRequest) {
           city,
           displacement_status: displacementStatus,
           verification_status: "VERIFIED",
-          notes: assessment,
+          notes: finalNotes,
         })
         .select()
         .single();

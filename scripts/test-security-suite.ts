@@ -5,6 +5,8 @@
 
 const BASE_URL = process.env.TEST_BASE_URL || "http://localhost:3000";
 
+export {};
+
 interface TestResult {
   name: string;
   category: "VOUCHER" | "REDEMPTION" | "AUTHORIZATION" | "RATE_LIMIT" | "PRIVACY";

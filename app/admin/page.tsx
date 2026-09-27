@@ -20,6 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { StatCard } from "@/components/ui/stat-card";
 import { formatCurrencyPKR } from "@/lib/utils";
+import { E2EStepperModal } from "@/components/demo/e2e-stepper-modal";
 
 interface RelayerTelemetry {
   isConfigured: boolean;
@@ -33,6 +34,7 @@ interface RelayerTelemetry {
 export default function AdminPage() {
   const [isEmergencyMode, setIsEmergencyMode] = useState(true);
   const [isSwitching, setIsSwitching] = useState(false);
+  const [isE2EOpen, setIsE2EOpen] = useState(false);
   const [relayerInfo, setRelayerInfo] = useState<RelayerTelemetry>({
     isConfigured: false,
     relayerAddress: "0x4a9d...c9b2",
@@ -136,39 +138,56 @@ export default function AdminPage() {
           </p>
         </div>
 
-        {/* Emergency Mode Switcher */}
-        <div className="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 flex items-center gap-4">
-          <div className="text-left">
-            <div className="text-[10px] uppercase font-bold text-slate-400">Network Mode</div>
-            <div className="text-xs font-bold text-white flex items-center gap-1.5 mt-0.5">
-              {isEmergencyMode ? (
-                <span className="text-rose-400 flex items-center gap-1">
-                  <Flame className="w-3.5 h-3.5" /> Emergency Mode
-                </span>
-              ) : (
-                <span className="text-emerald-400 flex items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5" /> Community Mode
-                </span>
-              )}
-            </div>
-          </div>
-
+        <div className="flex items-center gap-3">
           <Button
             size="sm"
-            variant={isEmergencyMode ? "danger" : "secondary"}
-            onClick={toggleEmergencyMode}
-            disabled={isSwitching}
+            variant="primary"
+            onClick={() => setIsE2EOpen(true)}
+            className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-950/40"
           >
-            {isSwitching ? (
-              <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-            ) : isEmergencyMode ? (
-              "Switch to Community"
-            ) : (
-              "Trigger Emergency Mode"
-            )}
+            <Zap className="w-3.5 h-3.5 mr-1.5" />
+            <span>Run Complete E2E Flow</span>
           </Button>
+
+          {/* Emergency Mode Switcher */}
+          <div className="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 flex items-center gap-4">
+            <div className="text-left">
+              <div className="text-[10px] uppercase font-bold text-slate-400">Network Mode</div>
+              <div className="text-xs font-bold text-white flex items-center gap-1.5 mt-0.5">
+                {isEmergencyMode ? (
+                  <span className="text-rose-400 flex items-center gap-1">
+                    <Flame className="w-3.5 h-3.5" /> Emergency Mode
+                  </span>
+                ) : (
+                  <span className="text-emerald-400 flex items-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5" /> Community Mode
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <Button
+              size="sm"
+              variant={isEmergencyMode ? "danger" : "secondary"}
+              onClick={toggleEmergencyMode}
+              disabled={isSwitching}
+            >
+              {isSwitching ? (
+                <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+              ) : isEmergencyMode ? (
+                "Switch to Community"
+              ) : (
+                "Trigger Emergency Mode"
+              )}
+            </Button>
+          </div>
         </div>
       </div>
+
+      <E2EStepperModal
+        isOpen={isE2EOpen}
+        onClose={() => setIsE2EOpen(false)}
+      />
 
       {/* Node Status Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
