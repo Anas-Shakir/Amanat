@@ -13,6 +13,7 @@ import {
   Activity,
   Layers
 } from "lucide-react";
+import { DaduAidMapDynamic } from "@/components/maps/dadu-aid-map-dynamic";
 
 export default function HomePage() {
   return (
@@ -134,6 +135,37 @@ export default function HomePage() {
             </div>
           </div>
         </div>
+      </section>
+
+      {/* Interactive Geographic Aid Map Showcase Section */}
+      <section className="py-14 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full">
+        <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-6">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-500/30 text-xs font-semibold text-emerald-300">
+                <MapPin className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Geospatial Field Telemetry</span>
+              </span>
+              <span className="text-xs text-slate-500 font-mono">Dadu District • Sindh</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+              Decentralized Micro-Fulfillment Network
+            </h2>
+            <p className="text-slate-400 text-sm mt-1 max-w-2xl">
+              Real-time map of verified Kiryana merchant stores, flood relief corridors, and community social safety net clusters across Johi, Mehar, and Khairpur Nathan Shah.
+            </p>
+          </div>
+
+          <Link
+            href="/map"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs font-semibold text-white hover:bg-slate-800 transition-all shadow-lg hover:border-emerald-500/50"
+          >
+            <span>Open Full Command Map</span>
+            <ArrowRight className="w-3.5 h-3.5 text-emerald-400" />
+          </Link>
+        </div>
+
+        <DaduAidMapDynamic height="520px" />
       </section>
 
       {/* The Core Loop Infographic */}

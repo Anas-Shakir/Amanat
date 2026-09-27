@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { 
   HeartHandshake, 
   MapPin, 
@@ -33,6 +34,7 @@ import { CreateCampaignModal } from "@/components/campaigns/create-campaign-moda
 import { FulfillmentChart } from "@/components/analytics/fulfillment-chart";
 import { GeographicDistributionChart } from "@/components/analytics/geographic-distribution-chart";
 import { MerchantLeaderboard } from "@/components/analytics/merchant-leaderboard";
+import { DaduAidMapDynamic } from "@/components/maps/dadu-aid-map-dynamic";
 import { Campaign } from "@/types";
 import { formatCurrencyPKR } from "@/lib/utils";
 import { useAuth } from "@/components/auth/auth-context";
@@ -41,7 +43,7 @@ export default function DonorPage() {
   const { role } = useAuth();
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [filterMode, setFilterMode] = useState<"ALL" | "EMERGENCY" | "COMMUNITY">("ALL");
-  const [viewTab, setViewTab] = useState<"POOLS" | "ANALYTICS">("POOLS");
+  const [viewTab, setViewTab] = useState<"POOLS" | "MAP" | "ANALYTICS">("POOLS");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
   const [inspectedCampaign, setInspectedCampaign] = useState<Campaign | null>(null);
@@ -155,12 +157,21 @@ export default function DonorPage() {
               <span>Aid Pools</span>
             </button>
             <button
-              onClick={() => setViewTab("ANALYTICS")}
+              onClick={() => setViewTab("MAP")}
               className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
-                viewTab === "ANALYTICS" ? "bg-emerald-950 text-emerald-300 border border-emerald-500/40 shadow" : "text-slate-400 hover:text-white"
+                viewTab === "MAP" ? "bg-emerald-950 text-emerald-300 border border-emerald-500/40 shadow" : "text-slate-400 hover:text-white"
               }`}
             >
-              <BarChart3 className="w-3.5 h-3.5 text-emerald-400" />
+              <MapPin className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Geographic Map</span>
+            </button>
+            <button
+              onClick={() => setViewTab("ANALYTICS")}
+              className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
+                viewTab === "ANALYTICS" ? "bg-cyan-950 text-cyan-300 border border-cyan-500/40 shadow" : "text-slate-400 hover:text-white"
+              }`}
+            >
+              <BarChart3 className="w-3.5 h-3.5 text-cyan-400" />
               <span>Live Analytics</span>
             </button>
           </div>
@@ -342,7 +353,32 @@ export default function DonorPage() {
         </div>
       )}
 
-      {/* TAB 2: ADVANCED ANALYTICS */}
+      {/* TAB 2: GEOGRAPHIC MAP */}
+      {viewTab === "MAP" && (
+        <div className="space-y-6 animate-in fade-in duration-200">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+            <div>
+              <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                <MapPin className="w-5 h-5 text-emerald-400" />
+                <span>Dadu District Geospatial Aid Infrastructure</span>
+              </h2>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Real-time node status across Johi, Mehar, Khairpur Nathan Shah, and Radhan. Click any merchant marker or relief zone to inspect liquidity and verified household metrics.
+              </p>
+            </div>
+            <Link href="/map">
+              <Button size="sm" variant="outline" className="text-xs">
+                <span>Open Full-Screen Command Map</span>
+                <ArrowUpRight className="w-3.5 h-3.5 ml-1" />
+              </Button>
+            </Link>
+          </div>
+
+          <DaduAidMapDynamic height="580px" />
+        </div>
+      )}
+
+      {/* TAB 3: ADVANCED ANALYTICS */}
       {viewTab === "ANALYTICS" && (
         <div className="space-y-8 animate-in fade-in duration-200">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">

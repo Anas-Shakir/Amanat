@@ -76,6 +76,13 @@ export default function RootLayout({
               {/* Role Navigation Pills */}
               <nav className="hidden lg:flex items-center gap-1.5 bg-slate-900/80 p-1 rounded-full border border-slate-800 text-xs font-medium">
                 <Link
+                  href="/map"
+                  className="px-3 py-1.5 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition-colors flex items-center gap-1"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  Aid Map
+                </Link>
+                <Link
                   href="/donor"
                   className="px-3 py-1.5 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
                 >
@@ -124,6 +131,7 @@ export default function RootLayout({
                 <span className="font-semibold text-slate-200">Amanat</span> — Verifiable Local Aid Infrastructure for Dadu & Disaster-Prone Communities.
               </div>
               <div className="flex items-center gap-6 text-slate-500">
+                <Link href="/map" className="hover:text-slate-300">Aid Map</Link>
                 <Link href="/donor" className="hover:text-slate-300">Donors</Link>
                 <Link href="/merchant" className="hover:text-slate-300">Merchants</Link>
                 <Link href="/organization" className="hover:text-slate-300">Issuers</Link>
